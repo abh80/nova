@@ -8,7 +8,9 @@ object EnvironmentLoader extends LazyLogging {
   def getEnvironmentVariable(variable: String, default: DefaultEnvironmentConstants, required: Boolean = false): String = {
     val returnable = Option(System.getenv(variable))
     if (returnable.isEmpty) then
-      if required then logger.warn("A crucial variable {} was not set", variable)
+      if required then
+        logger.error("A crucial variable {} was not set", variable)
+        throw new RuntimeException(s"Environment variable $variable is required but not set")
       else return default.value
     returnable.get
   }

@@ -5,7 +5,8 @@ import org.eclipse.jetty.server.Server
 import org.plat.flowops.nova.constants.DefaultEnvironmentConstants
 import org.plat.flowops.nova.servlet.GitHttpServlet
 import org.plat.flowops.nova.utils.EnvironmentLoader
-import org.eclipse.jetty.servlet.{ServletHolder, ServletHandler}
+import org.eclipse.jetty.servlet.{ServletHandler, ServletHolder}
+import org.plat.flowops.nova.database.PostgresManager
 
 object ServletMainRunner extends App with LazyLogging {
   private def createBasePathIfNotExists(basePath: String): Unit = {
@@ -41,6 +42,12 @@ object ServletMainRunner extends App with LazyLogging {
 
   server.start()
   logger.info("Server started at port {}", port)
+
+  PostgresManager.getInstance(
+    EnvironmentLoader.getEnvironmentVariable("POSTGRES_URL" , null , true),
+    EnvironmentLoader.getEnvironmentVariable("POSTGRES_USER" , null , true),
+    EnvironmentLoader.getEnvironmentVariable("POSTGRES_PASSWORD" , null , true)
+  )
 
   server.join()
 }

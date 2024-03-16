@@ -1,0 +1,21 @@
+- name: Install virtualenv and packaging
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python3-virtualenv
+    - python3-pip
+    - python3-setuptools
+
+- name: Install psycopg2
+  apt:
+    name: python3-psycopg2
+    state: present
+
+- name: Create a new database with name "nova_repo_db"
+  community.postgresql.postgresql_db:
+    name: "nova_repo_db"
+    comment: "Nova repository database"
+    login_host: "127.0.0.1"
+    login_user: "root"
+    login_password: "mysecretpassword"
