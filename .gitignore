@@ -43,7 +43,7 @@ bin/
 
 ./.env
 # Local .terraform directories
-**/.terraform/*
+**/.terraform
 
 # .tfstate files
 *.tfstate
@@ -83,4 +83,4 @@ terraform.rc
 
 .idea/
 
-**/.terraform.lock.hcl
+.terraform.lock.hcl

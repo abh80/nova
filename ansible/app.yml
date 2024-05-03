@@ -1,4 +1,0 @@
-- hosts: psql
-  roles:
-    - role: postgresql-main
-  become: yes

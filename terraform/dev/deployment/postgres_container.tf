@@ -1,10 +1,11 @@
 resource "docker_image" "postgres" {
   name = "postgres-custom:latest"
   build {
-    context   = "${path.module}/docker/postgresql"
-    build_args = {
-      ANSIBLE_PASSWORD = var.ansible_ssh_password
+    context   = "${path.module}/docker/"
+    build_arg = {
     }
+    network_mode = "host"
+    no_cache = true
   }
 }
 resource "docker_container" "postgresql-instance-main" {
@@ -12,23 +13,29 @@ resource "docker_container" "postgresql-instance-main" {
   image = docker_image.postgres.image_id
   ports {
     internal = 5432
-    external = 54321
+    external = 5432
   }
   ports {
     internal = 22
-    external = 22
+    external = 2222
   }
 
   env = [
-    "POSTGRES_USER=${var.postgres_user}",
-    "POSTGRES_PASSWORD=${var.postgres_password}",
-    "PGDATA=/var/lib/postgresql/data/pgdata"
+    "POSTGRES_USER=postgres",
+    "POSTGRES_PASSWORD=my_password",
+    "PGDATA=/var/lib/postgresql/data/pgdata",
+#     "VAULT_TOKEN=${var.vault_token}",
+    "VAULT_ADDR=http://11.0.0.2:8200"
   ]
   volumes {
     volume_name    = docker_volume.postgresql-instance-main.name
     container_path = "/var/lib/postgresql/data"
     host_path      = "/mnt/data/postgresql-instance-main"
     read_only      = false
+  }
+  networks_advanced {
+    name = "main_net_1"
+    ipv4_address = "11.0.0.3"
   }
 }
 
