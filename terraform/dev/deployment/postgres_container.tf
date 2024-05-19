@@ -1,12 +1,5 @@
 resource "docker_image" "postgres" {
-  name = "postgres-custom:latest"
-  build {
-    context   = "${path.module}/docker/"
-    build_arg = {
-    }
-    network_mode = "host"
-    no_cache = true
-  }
+  name = "postgres:latest"
 }
 resource "docker_container" "postgresql-instance-main" {
   name  = "postgresql-instance-main"
@@ -15,16 +8,11 @@ resource "docker_container" "postgresql-instance-main" {
     internal = 5432
     external = 5432
   }
-  ports {
-    internal = 22
-    external = 2222
-  }
 
   env = [
     "POSTGRES_USER=postgres",
     "POSTGRES_PASSWORD=my_password",
     "PGDATA=/var/lib/postgresql/data/pgdata",
-#     "VAULT_TOKEN=${var.vault_token}",
     "VAULT_ADDR=http://11.0.0.2:8200"
   ]
   volumes {

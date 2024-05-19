@@ -57,3 +57,9 @@ path "sys/health"
 {
   capabilities = ["read", "sudo"]
 }
+
+# allow token creation
+path "auth/token/create"
+{
+  capabilities = ["create", "sudo"]
+}
