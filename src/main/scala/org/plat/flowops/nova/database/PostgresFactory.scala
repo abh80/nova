@@ -5,7 +5,7 @@ import org.plat.flowops.nova.constants.DatabaseTypes
 
 import java.sql.{Connection, DriverManager}
 
-object PostgresManager extends TDatabaseManager with LazyLogging {
+object PostgresFactory extends TDatabaseManager with LazyLogging {
   private var connection: Connection = _
 
   override def connect(connectionURL: String, username: String, password: String): Unit =
