@@ -14,4 +14,6 @@ object EnvironmentLoader extends LazyLogging {
       else return default.value
     returnable.get
   }
+  
+  def getRequiredEnvironmentVariable(variable: String): String = getEnvironmentVariable(variable, null, true)
 }

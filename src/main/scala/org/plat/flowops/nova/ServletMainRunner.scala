@@ -43,10 +43,10 @@ object ServletMainRunner extends App with LazyLogging {
   server.start()
   logger.info("Server started at port {}", port)
 
-  PostgresManager.getInstance(
-    EnvironmentLoader.getEnvironmentVariable("POSTGRES_URL" , null , true),
-    EnvironmentLoader.getEnvironmentVariable("POSTGRES_USER" , null , true),
-    EnvironmentLoader.getEnvironmentVariable("POSTGRES_PASSWORD" , null , true)
+  PostgresManager.connect(
+    EnvironmentLoader.getRequiredEnvironmentVariable("POSTGRES_URL"),
+    EnvironmentLoader.getRequiredEnvironmentVariable("POSTGRES_USER"),
+    EnvironmentLoader.getRequiredEnvironmentVariable("POSTGRES_PASSWORD")
   )
 
   server.join()

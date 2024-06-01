@@ -1,36 +1,19 @@
 package org.plat.flowops.nova.database
 
 import com.typesafe.scalalogging.LazyLogging
+import org.plat.flowops.nova.constants.DatabaseTypes
 
 import java.sql.{Connection, DriverManager}
 
-class PostgresManager extends LazyLogging {
+object PostgresManager extends TDatabaseManager with LazyLogging {
   private var connection: Connection = _
 
-  def this(connectionUrl: String, username: String, password: String) =
-    this()
-    logger.debug(s"Connecting to $connectionUrl, username: $username, password: $password")
-    logger.info(s"Connecting to Postgres database")
-    connection = DriverManager.getConnection(connectionUrl, username, password)
-  end this
+  override def connect(connectionURL: String, username: String, password: String): Unit =
+    logger.debug(s"Connecting to $connectionURL, username: $username, password: $password")
+    connection = DriverManager.getConnection(connectionURL, username, password)
+  end connect
 
-  private val getConnection: Connection = connection
+  override def closeConnection(): Unit = connection.close()
 
-  private def closeConnection(): Unit = connection.close()
-}
-
-object PostgresManager {
-  private var instance: Option[PostgresManager] = None
-
-  def getInstance(connectionUrl: String, username: String, password: String): PostgresManager =
-    if (instance.isEmpty) {
-      instance = Some(new PostgresManager(connectionUrl, username, password))
-    }
-    instance.get
-  end getInstance
-
-  def closeConnection(): Unit =
-    instance.get.closeConnection()
-    instance = None
-  end closeConnection
+  override def getType: String = DatabaseTypes.TYPE_PSQL
 }
