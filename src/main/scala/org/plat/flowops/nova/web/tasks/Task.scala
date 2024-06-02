@@ -1,5 +1,5 @@
 package org.plat.flowops.nova.web.tasks
 
-trait Task {
+trait Task extends Runnable {
   def execute(): Unit
 }

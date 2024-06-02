@@ -25,6 +25,7 @@ object Libs {
     const val LOGBACK_CLASSIC = "ch.qos.logback:logback-classic:1.5.0"
     const val JOBRUNR = "org.jobrunr:jobrunr:6.3.5"
     const val JDBC_POSTGRES = "org.postgresql:postgresql:42.7.2"
+    const val SPRING_VAULT_CORE = "org.springframework.vault:spring-vault-core:3.1.1"
 }
 
 dependencies {
@@ -38,6 +39,7 @@ dependencies {
     implementation(Libs.JGIT_HTTP)
     implementation(Libs.JOBRUNR)
     implementation(Libs.JDBC_POSTGRES)
+    implementation(Libs.SPRING_VAULT_CORE)
     testImplementation(Libs.JUNIT)
     testImplementation(Libs.SCALA_TEST)
 }

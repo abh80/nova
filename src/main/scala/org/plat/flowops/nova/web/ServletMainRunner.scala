@@ -10,7 +10,7 @@ import org.plat.flowops.nova.web.tasks.{ServerStartTask, Task}
 
 object ServletMainRunner extends App with LazyLogging {
   logger.info("Starting Servlet Main Runner")
-  
+
   private val startTask : Task = new ServerStartTask()
   startTask.execute()
 }
