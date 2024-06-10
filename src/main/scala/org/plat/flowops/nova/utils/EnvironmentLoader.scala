@@ -4,6 +4,8 @@ import com.typesafe.scalalogging.LazyLogging
 import org.plat.flowops.nova.constants.DefaultEnvironmentConstants
 
 object EnvironmentLoader extends LazyLogging {
+  def getRequiredEnvironmentVariable(variable: String): String = getEnvironmentVariable(variable, null, true)
+
   def getEnvironmentVariable(variable: String, default: DefaultEnvironmentConstants, required: Boolean = false): String = {
     val returnable = Option(System.getenv(variable))
     if (returnable.isEmpty) then
@@ -13,6 +15,4 @@ object EnvironmentLoader extends LazyLogging {
       else return default.value
     returnable.get
   }
-
-  def getRequiredEnvironmentVariable(variable: String): String = getEnvironmentVariable(variable, null, true)
 }

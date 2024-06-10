@@ -11,7 +11,7 @@ repositories {
     mavenCentral()
 }
 object Libs {
-    const val SCALA_LIBRARY = "org.scala-lang:scala-library:2.13.6"
+    const val SCALA_LIBRARY = "org.scala-lang:scala3-library_3:3.3.0"
     const val JUNIT = "org.junit.jupiter:junit-jupiter:5.7.0"
     const val SCALA_TEST = "org.scalatest:scalatest_3:3.2.18"
     const val JGIT_LIBRARY = "org.eclipse.jgit:org.eclipse.jgit:6.8.0.202311291450-r"
@@ -26,6 +26,8 @@ object Libs {
     const val JOBRUNR = "org.jobrunr:jobrunr:6.3.5"
     const val JDBC_POSTGRES = "org.postgresql:postgresql:42.7.2"
     const val SPRING_VAULT_CORE = "org.springframework.vault:spring-vault-core:3.1.1"
+    const val SCALA_MOCK = "org.scalamock:scalamock_3:6.0.0"
+    const val SCALACTIC = "org.scalactic:scalactic_3:3.2.18"
 }
 
 dependencies {
@@ -40,14 +42,20 @@ dependencies {
     implementation(Libs.JOBRUNR)
     implementation(Libs.JDBC_POSTGRES)
     implementation(Libs.SPRING_VAULT_CORE)
-    testImplementation(Libs.JUNIT)
     testImplementation(Libs.SCALA_TEST)
+    testImplementation(Libs.SCALA_MOCK)
+    testImplementation(Libs.SCALACTIC)
+    testRuntimeOnly("org.junit.platform:junit-platform-engine:1.10.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.0")
+    testRuntimeOnly("org.scalatestplus:junit-5-10_3:3.2.18.0")
 }
 
 tasks.test {
-    useJUnitPlatform()
+    useJUnitPlatform {
+        includeEngines("scalatest")
+        testLogging {
+            events("passed", "skipped", "failed")
+        }
+    }
+    environment("TEST_VAR", "test_value")
 }
-
-//tasks.withType(ScalaCompile::class.java) {
-//    scalaCompileOptions.additionalParameters = listOf("-Ytasty-reader")
-//}
