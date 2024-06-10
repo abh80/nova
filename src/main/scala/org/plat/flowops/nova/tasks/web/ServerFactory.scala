@@ -1,4 +1,4 @@
-package org.plat.flowops.nova.web
+package org.plat.flowops.nova.tasks.web
 
 import org.eclipse.jetty.server.Server
 import java.io.File

@@ -16,4 +16,8 @@ object LeaseContainerService {
   def addListenerToLeaseContainer(secretLeaseContainer: SecretLeaseContainer, leaseListener: LeaseListener): SecretLeaseContainer =
     secretLeaseContainer.addLeaseListener(leaseListener)
     secretLeaseContainer
+    
+  def initAndStartLeaseContainer(leaseContainer: SecretLeaseContainer) : Unit =
+    leaseContainer.afterPropertiesSet()
+    leaseContainer.start()
 }

@@ -1,4 +1,4 @@
-package org.plat.flowops.nova.web
+package org.plat.flowops.nova.tasks.web
 
 import com.typesafe.scalalogging.LazyLogging
 import org.plat.flowops.nova.constants.DefaultEnvironmentConstants
