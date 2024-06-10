@@ -1,7 +1,9 @@
 package org.plat.flowops.nova.database
 
+import javax.sql.DataSource
+
 trait TDatabaseManager {
-  def connect(connectionURL: String, username: String, password: String) : Unit
-  def getType : String
+  def connect(dataSource: DataSource) : Unit
+  def getType: String
   def closeConnection(): Unit
 }

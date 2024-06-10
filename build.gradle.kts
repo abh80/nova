@@ -45,6 +45,8 @@ dependencies {
     testImplementation(Libs.SCALA_TEST)
     testImplementation(Libs.SCALA_MOCK)
     testImplementation(Libs.SCALACTIC)
+    implementation("com.typesafe.slick:slick_3:3.5.1")
+    implementation("com.typesafe.slick:slick-hikaricp_3:3.5.1")
     testRuntimeOnly("org.junit.platform:junit-platform-engine:1.10.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.0")
     testRuntimeOnly("org.scalatestplus:junit-5-10_3:3.2.18.0")

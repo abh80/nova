@@ -8,10 +8,10 @@ import org.springframework.vault.core.lease.event.{LeaseListener, SecretLeaseEve
 object LeaseContainerService {
   def getLeaseContainer(vaultTemplate: VaultTemplate): SecretLeaseContainer = new SecretLeaseContainer(vaultTemplate)
 
-  def subscribeLeaseContainer(secretPath: String, secretLeaseContainer: SecretLeaseContainer): SecretLeaseContainer =
+  def subscribeLeaseContainer(secretPath: String, secretLeaseContainer: SecretLeaseContainer): RequestedSecret =
     val requestedSecret = RequestedSecret.from(RequestedSecret.Mode.RENEW, secretPath)
     secretLeaseContainer.addRequestedSecret(requestedSecret)
-    secretLeaseContainer
+    requestedSecret
 
   def addListenerToLeaseContainer(secretLeaseContainer: SecretLeaseContainer, leaseListener: LeaseListener): SecretLeaseContainer =
     secretLeaseContainer.addLeaseListener(leaseListener)
