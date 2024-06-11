@@ -4,7 +4,7 @@ import com.typesafe.scalalogging.LazyLogging
 import org.plat.flowops.nova.tasks.Task
 import org.plat.flowops.nova.tasks.web.tasks.ServerStartTask
 
-object ServletMainRunner extends LazyLogging with Task {
+object ServletMainRunner extends LazyLogging with Task:
   override def run(): Unit = ()
 
   override def execute(): Unit = startServlet()
@@ -21,4 +21,3 @@ object ServletMainRunner extends LazyLogging with Task {
   //  container.afterPropertiesSet()
   //  container.start()
   //  logger.info("Added listener")
-}

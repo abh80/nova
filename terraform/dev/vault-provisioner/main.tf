@@ -57,15 +57,15 @@ resource "vault_mount" "db" {
   type = "database"
 }
 resource "vault_database_secret_backend_connection" "psql_db_nova" {
-  backend = vault_mount.db.path
-  name = "main-db"
+  backend           = vault_mount.db.path
+  name              = "main-db"
   allowed_roles     = ["app-nova", "database-admin"]
   verify_connection = true
-  plugin_name = "postgresql-database-plugin"
+  plugin_name       = "postgresql-database-plugin"
   postgresql {
-    username          = "nova"
-    password          = "my_password"
-    connection_url    = "postgresql://{{username}}:{{password}}@11.0.0.3:5432/main?sslmode=disable"
+    username       = "nova"
+    password       = "my_password"
+    connection_url = "postgresql://{{username}}:{{password}}@11.0.0.3:5432/main?sslmode=disable"
   }
 }
 

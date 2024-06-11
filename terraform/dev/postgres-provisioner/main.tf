@@ -14,11 +14,11 @@ provider "postgresql" {
   port     = 5432
   username = "postgres"
   password = var.password
-  sslmode = "disable"
+  sslmode  = "disable"
 }
 
 resource "postgresql_database" "main" {
-  name = "main"
+  name  = "main"
   owner = "postgres"
 }
 
@@ -29,7 +29,7 @@ resource "postgresql_role" "nova_role" {
 }
 
 resource "postgresql_schema" "nova_schema" {
-  name  = "nova"
-  owner = postgresql_role.nova_role.name
+  name     = "nova"
+  owner    = postgresql_role.nova_role.name
   database = postgresql_database.main.name
 }

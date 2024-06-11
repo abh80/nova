@@ -7,7 +7,7 @@ resource "docker_container" "vault" {
     read_only      = false
   }
   networks_advanced {
-    name = docker_network.main-net.id
+    name         = docker_network.main-net.id
     ipv4_address = "11.0.0.2"
   }
   ports {

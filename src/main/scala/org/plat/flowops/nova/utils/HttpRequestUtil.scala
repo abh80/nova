@@ -2,8 +2,8 @@ package org.plat.flowops.nova.utils
 
 import javax.servlet.http.HttpServletRequest
 
-object HttpRequestUtil {
-  def getDebugInfo(request: HttpServletRequest): String = {
+object HttpRequestUtil:
+  def getDebugInfo(request: HttpServletRequest): String =
     val sb = new StringBuilder
     sb.append("Request URL: ").append(request.getRequestURL).append("\n")
     sb.append("Request URI: ").append(request.getRequestURI).append("\n")
@@ -31,10 +31,7 @@ object HttpRequestUtil {
     sb.append("Request Locales: ").append(request.getLocales).append("\n")
     sb.append("Request Headers: ").append("\n")
     val headerNames = request.getHeaderNames
-    while (headerNames.hasMoreElements) {
+    while headerNames.hasMoreElements do
       val headerName = headerNames.nextElement
       sb.append("  ").append(headerName).append(": ").append(request.getHeader(headerName)).append("\n")
-    }
     sb.toString
-  }
-}

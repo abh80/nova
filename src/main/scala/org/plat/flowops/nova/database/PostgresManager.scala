@@ -6,7 +6,7 @@ import slick.jdbc.PostgresProfile.api.*
 
 import javax.sql.DataSource
 
-object PostgresManager extends TDatabaseManager with LazyLogging {
+object PostgresManager extends TDatabaseManager with LazyLogging:
   @volatile private var db: Database = _
 
   override def connect(dataSource: DataSource): Unit =
@@ -23,4 +23,3 @@ object PostgresManager extends TDatabaseManager with LazyLogging {
   }
 
   override def getType: String = DatabaseTypes.TYPE_PSQL
-}

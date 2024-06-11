@@ -1,0 +1,31 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+echo "🚀 Starting commit message hook..."
+echo "----------------------------------"
+message="$(cat "$1")"
+requiredPattern="^(add|cut|fix|bump|make|start|stop|refactor|reformat|optimise|document|merge): .*$"
+
+if ! echo "$message" | grep -Eq "$requiredPattern"; then
+  echo "------------------------"
+  echo "🚨 Wrong commit message! 😕"
+  echo "------------------------"
+  echo "Hey you! Yes you! 😒"
+  echo "Don't go around not making your commit messages unclear"
+  echo "------------------------"
+  echo "📝 The commit message must have this format:"
+  echo "<verb in imperative mood> <what was done>"
+  echo "🔤 Allowed verbs in imperative mood: add, cut, fix, bump, make, start, stop, refactor, reformat, optimise, document, merge"
+  echo "🖋️ Example: add: login button"
+  echo "------------------------"
+  echo "🧐 Your commit message was:"
+  echo "$message"
+  echo "------------------------"
+  echo "ℹ️ For more information, check script in .husky/commit-msg"
+  echo "------------------------"
+  exit 1
+else
+  echo "🎉 Commit message hook completed. Happy contributing ❤️"
+fi
+
+echo
+exit 0

@@ -5,13 +5,12 @@ import java.io.File
 import com.typesafe.scalalogging.LazyLogging
 import org.eclipse.jetty.servlet.ServletHolder
 import org.plat.flowops.nova.utils.EnvironmentLoader
-import org.eclipse.jetty.servlet.{ServletHandler, ServletHolder}
+import org.eclipse.jetty.servlet.{ ServletHandler, ServletHolder }
 import org.plat.flowops.nova.constants.DefaultEnvironmentConstants
 import org.plat.flowops.nova.servlet.GitHttpServlet
 
-
-object ServerFactory extends LazyLogging {
-  def createServer(port: Int, basePath: String, gitHttpServletPath: String) : Server =
+object ServerFactory extends LazyLogging:
+  def createServer(port: Int, basePath: String, gitHttpServletPath: String): Server =
 
     logger.info("Starting Jetty Server with port {}", port)
 
@@ -19,8 +18,8 @@ object ServerFactory extends LazyLogging {
 
     createBasePathIfNotExists(basePath)
 
-    val server: Server = new Server(port)
-    val servletHolder: ServletHolder = new ServletHolder(new GitHttpServlet)
+    val server: Server                 = new Server(port)
+    val servletHolder: ServletHolder   = new ServletHolder(new GitHttpServlet)
     val servletHandler: ServletHandler = new ServletHandler
 
     servletHolder.setInitParameter("base-path", basePath)
@@ -32,11 +31,8 @@ object ServerFactory extends LazyLogging {
     server.setHandler(servletHandler)
     server
 
-  private def createBasePathIfNotExists(basePath: String): Unit = {
+  private def createBasePathIfNotExists(basePath: String): Unit =
     val basePathFile = new File(basePath)
-    if (!basePathFile.exists()) {
+    if !basePathFile.exists() then
       logger.debug("Base Path {} does not exist, hence creating one...", basePath)
       basePathFile.mkdirs()
-    }
-  }
-}

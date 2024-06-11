@@ -5,10 +5,10 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class EnvironmentLoaderSpec extends AnyFlatSpec with MockFactory with Matchers {
+class EnvironmentLoaderSpec extends AnyFlatSpec with MockFactory with Matchers:
 
   "getEnvironmentValue" should "return the value of environment value if set" in {
-    val varName = "TEST_VAR"
+    val varName  = "TEST_VAR"
     val envValue = "test_value"
 
     val result = EnvironmentLoader.getEnvironmentVariable(varName, DefaultEnvironmentConstants.PORT)
@@ -33,5 +33,3 @@ class EnvironmentLoaderSpec extends AnyFlatSpec with MockFactory with Matchers {
 
     exception.getMessage shouldBe s"Environment variable $varName is required but not set"
   }
-
-}

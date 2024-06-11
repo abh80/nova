@@ -84,3 +84,5 @@ terraform.rc
 .idea/
 
 .terraform.lock.hcl
+
+node_modules
