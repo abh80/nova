@@ -22,7 +22,7 @@ resource "docker_container" "postgresql-instance-main" {
     read_only      = false
   }
   networks_advanced {
-    name         = "main_net_1"
+    name         = docker_network.main-net.id
     ipv4_address = "11.0.0.3"
   }
 }

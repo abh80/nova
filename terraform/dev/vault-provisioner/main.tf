@@ -74,6 +74,6 @@ resource "vault_database_secret_backend_static_role" "period_role" {
   name                = "app-nova"
   db_name             = vault_database_secret_backend_connection.psql_db_nova.name
   username            = vault_database_secret_backend_connection.psql_db_nova.postgresql[0].username
-  rotation_period     = "3600"
+  rotation_period     = "60"
   rotation_statements = ["ALTER USER \"{{name}}\" WITH PASSWORD '{{password}}';"]
 }
