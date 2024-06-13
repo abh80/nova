@@ -6,15 +6,14 @@ import org.plat.flowops.nova.utils.EnvironmentLoader
 import javax.sql.DataSource
 
 object PostgresConfig:
-  private var POSTGRES_URL: String  = _
-  private var POSTGRES_USER: String = _
+  private var POSTGRES_URL: String = _
 
-  def createDatabaseConfig(password: String): DataSource =
+  def createDatabaseConfig(username: String, password: String): DataSource =
     val hikariConfig = new HikariConfig()
     initStaticFieldsIfRequired()
 
     hikariConfig.setJdbcUrl(POSTGRES_URL)
-    hikariConfig.setUsername(POSTGRES_USER)
+    hikariConfig.setUsername(username)
     hikariConfig.setPassword(password)
     hikariConfig.setDriverClassName("org.postgresql.Driver")
     hikariConfig.setMaximumPoolSize(10)
@@ -22,7 +21,5 @@ object PostgresConfig:
     new HikariDataSource(hikariConfig)
 
   private def initStaticFieldsIfRequired(): Unit =
-    if POSTGRES_USER == null then
-      POSTGRES_USER = EnvironmentLoader.getRequiredEnvironmentVariable("POSTGRES_USER")
     if POSTGRES_URL == null then
       POSTGRES_URL = EnvironmentLoader.getRequiredEnvironmentVariable("POSTGRES_URL")

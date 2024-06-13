@@ -15,7 +15,7 @@ import org.plat.flowops.nova.tasks.Task
 class PostgresDatasourceLeaseStartTask extends Task with LazyLogging:
 
   override def execute(): Unit =
-    val DatabasePasswordPath = "database/static-creds/app-nova"
+    val DatabasePasswordPath = "database/creds/app-nova"
     val container            = getLeaseContainer(VaultService.getTemplate)
     val secret               = subscribeLeaseContainer(DatabasePasswordPath, container)
     addListenerToLeaseContainer(

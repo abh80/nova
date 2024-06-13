@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# Set the Git hooks path to the .githooks directory
+git config core.hooksPath .githooks
+
+echo "Git hooks path set to .githooks"
