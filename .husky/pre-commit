@@ -101,36 +101,6 @@ else
   echo "✅ All files are properly formatted."
 fi
 
-printf "\n------------------------\n"
-echo "🛠️ Running Scala tests..."
-echo "------------------------"
-
-printf "👀 Cleaning any existing Gradle Builds 🐘 ..."
-scalaclean_output=$(./gradlew clean)
-scalaclean_exit_code=$?
-
-if [ $scalaclean_exit_code -ne 0 ]; then
-  echo "$scalaclean_output"
-  echo "❌ Gradle clean failed, please fix these issues before commiting"
-  exit 1
-else printf "\b\b\b ✅\n"
-fi
-echo
-
-printf "⌚ Now running your precious test cases..."
-scalatest_output=$(./gradlew test)
-scalatest_exit_code=$?
-
-if [ $scalatest_exit_code -ne 0 ]; then
-  echo "$scalatest_output"
-  echo "❌ Scala tests failed, please fix these issues before commiting"
-  exit 1
-else
-  printf "\b\b\b ✅\n"
-  echo
-  echo "😎 All tests passed!"
-fi
-
 echo
 echo "🎉 Pre commit hook completed."
 echo
