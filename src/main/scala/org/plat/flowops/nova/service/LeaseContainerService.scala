@@ -14,7 +14,7 @@ object LeaseContainerService:
       secretPath: String,
       secretLeaseContainer: SecretLeaseContainer
   ): RequestedSecret =
-    val requestedSecret = RequestedSecret.from(RequestedSecret.Mode.RENEW, secretPath)
+    val requestedSecret = RequestedSecret.renewable(secretPath)
     secretLeaseContainer.addRequestedSecret(requestedSecret)
     requestedSecret
 
