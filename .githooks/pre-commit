@@ -1,0 +1,99 @@
+#!/bin/bash
+
+# Love you ChatGPT ❤️
+echo
+echo "🚀 Starting pre hooks..."
+printf "\b-----------------------\n"
+
+confirm() {
+    read -r -p "$1 [y/N]: " response
+    case "$response" in
+        [yY][eE][sS]|[yY])
+            true
+            ;;
+        *)
+            false
+            ;;
+    esac
+}
+
+# Function to get modified files
+get_modified_files() {
+    git diff --cached --name-only --diff-filter=ACM
+}
+
+# Get modified files
+modified_files=$(get_modified_files)
+
+echo "🛠️ Running Terraform check..."
+echo "-------------------------"
+
+# Check Terraform files
+terraform_files=$(echo "$modified_files" | grep '\.tf$')
+echo "${terraform_files}"
+if [ -z "$terraform_files" ]; then
+    echo "✅ No Terraform files to check."
+else
+    for file in $terraform_files; do
+        echo "🔍 Checking file: $file"
+
+        # Run terraform fmt -check on the file
+        output=$(terraform fmt -check -write=false "$file")
+        if [ -n "$output" ]; then
+            echo "❌ Terraform file '$file' is not formatted correctly:"
+            echo "$output"
+            confirm "⚙️ Would you like to format the file now?" && terraform fmt "$file"
+            exit 1
+        else
+            echo "✅ Formatting check passed for '$file'"
+        fi
+
+        # Run terraform validate on the file
+        dir=$(dirname "$file")
+        cd "$dir" || { echo "❌ Failed to enter directory '$dir'"; exit 1; }
+        terraform validate > /dev/null 2>&1
+        validate_exit_code=$?
+        cd - > /dev/null 2>&1
+
+        if [ $validate_exit_code -ne 0 ]; then
+            echo "❌ Validation failed for '$file'"
+            terraform validate
+            confirm "⚙️ Would you like to attempt to fix the issues now?" && exit 1
+        else
+            echo "✅ Validation successful for '$file'"
+        fi
+    done
+fi
+
+printf "\n------------------------\n"
+echo "🛠️ Running Scalafmt check..."
+echo "------------------------"
+
+# Check Scala files
+scala_files=$(echo "$modified_files" | grep '\.scala$')
+
+if [ -z "$scala_files" ]; then
+    echo "✅ No Scala files to check."
+else
+    for file in $scala_files; do
+        echo "🔍 Checking file: $file"
+
+        # Run scalafmt --check on the file
+        scalafmt_output=$(scalafmt.bat --check "$file" 2>&1)
+        scalafmt_exit_code=$?
+
+        if [ $scalafmt_exit_code -ne 0 ]; then
+            echo "❌ Scalafmt check failed for '$file'. File not properly formatted."
+            confirm "⚙️ Would you like to format the file now?" && scalafmt.bat "$file"
+            exit 1
+        else
+            echo "✅ Formatting check passed for '$file'"
+        fi
+    done
+fi
+
+echo
+echo "🎉 Pre commit hook completed."
+echo
+
+exit 0

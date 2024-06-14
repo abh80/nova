@@ -9,6 +9,9 @@ terraform {
 variable "token" {
   type = string
 }
+variable "postgres_db_password" {
+  type = string
+}
 
 provider "vault" {
   address = "http://127.0.0.1:8200"
@@ -21,7 +24,7 @@ resource "vault_policy" "admins" {
 resource "vault_policy" "app-nova" {
   name   = "app-nova"
   policy = <<EOH
-            path "database/static-creds/app-nova" {
+            path "database/creds/app-nova" {
             capabilities = [ "read" ]
             }
   EOH
@@ -63,17 +66,17 @@ resource "vault_database_secret_backend_connection" "psql_db_nova" {
   verify_connection = true
   plugin_name       = "postgresql-database-plugin"
   postgresql {
-    username       = "nova"
-    password       = "my_password"
+    username       = "postgres"
+    password       = var.postgres_db_password
     connection_url = "postgresql://{{username}}:{{password}}@11.0.0.3:5432/main?sslmode=disable"
   }
 }
 
-resource "vault_database_secret_backend_static_role" "period_role" {
-  backend             = vault_mount.db.path
+resource "vault_database_secret_backend_role" "app_nova_role" {
+  backend             = vault_database_secret_backend_connection.psql_db_nova.backend
   name                = "app-nova"
   db_name             = vault_database_secret_backend_connection.psql_db_nova.name
-  username            = vault_database_secret_backend_connection.psql_db_nova.postgresql[0].username
-  rotation_period     = "60"
-  rotation_statements = ["ALTER USER \"{{name}}\" WITH PASSWORD '{{password}}';"]
+  creation_statements = ["CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';"]
+  default_ttl         = 60
+  max_ttl             = 60
 }

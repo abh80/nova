@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 echo "🚀 Starting commit message hook..."
 echo "----------------------------------"
 message="$(cat "$1")"

@@ -9,18 +9,20 @@ import org.plat.flowops.nova.service.LeaseContainerService.{
   initAndStartLeaseContainer,
   subscribeLeaseContainer
 }
-import org.plat.flowops.nova.service.VaultService
+import org.plat.flowops.nova.service.{ LeaseContainerRegistry, VaultService }
 import org.plat.flowops.nova.tasks.Task
 
 class PostgresDatasourceLeaseStartTask extends Task with LazyLogging:
 
   override def execute(): Unit =
-    val DatabasePasswordPath = "database/static-creds/app-nova"
+    val DatabasePasswordPath = "database/creds/app-nova"
     val container            = getLeaseContainer(VaultService.getTemplate)
     val secret               = subscribeLeaseContainer(DatabasePasswordPath, container)
+    val containerID          = "postgres-datasource-lease-container"
+    LeaseContainerRegistry.register(containerID, container)
     addListenerToLeaseContainer(
       container,
-      new CustomLeaseListener(secret, new PostgresDatasourceLeaseListener)
+      new CustomLeaseListener(containerID, secret, new PostgresDatasourceLeaseListener)
     )
 
     initAndStartLeaseContainer(container)
