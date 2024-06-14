@@ -36,3 +36,6 @@ danger:
   script:
     - npx danger ci
   
+workflow:
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_JOB_MANUAL == "true"'
