@@ -15,15 +15,11 @@ before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
 build:
-  only:
-    - master
   stage: build
   script:
     - gradle build
 
 test:
-  only:
-    - master
   stage: test
   script:
     - gradle test
@@ -33,10 +29,9 @@ danger:
   image: node:18
   only:
     - merge_requests
-  before_script:
+  script:
     - git clone https://gitlab.com/platinum-open-source/flowops/danger-bot .
     - npm install
-  script:
     - npx danger ci
 
 workflow:
