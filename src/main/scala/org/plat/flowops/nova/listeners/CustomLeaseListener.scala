@@ -2,17 +2,17 @@ package org.plat.flowops.nova.listeners
 
 import com.typesafe.scalalogging.LazyLogging
 import org.plat.flowops.nova.listeners.actionables.CustomLeaseActionable
+import org.plat.flowops.nova.service.LeaseContainerRegistry
 import org.springframework.vault.core.lease.domain.RequestedSecret
-import org.springframework.vault.core.lease.event.{
-  LeaseListenerAdapter,
-  SecretLeaseCreatedEvent,
-  SecretLeaseEvent,
-  SecretLeaseExpiredEvent
-}
+import org.springframework.vault.core.lease.event.*
 
-class CustomLeaseListener(requestedSecret: RequestedSecret, action: CustomLeaseActionable)
-    extends LeaseListenerAdapter
+class CustomLeaseListener(
+    leaseContainerId: String,
+    requestedSecret: RequestedSecret,
+    action: CustomLeaseActionable
+) extends LeaseListenerAdapter
     with LazyLogging:
+
   override def onLeaseEvent(leaseEvent: SecretLeaseEvent): Unit =
     if requestedSecret == leaseEvent.getSource then
       leaseEvent match
@@ -27,7 +27,4 @@ class CustomLeaseListener(requestedSecret: RequestedSecret, action: CustomLeaseA
 
         case _: SecretLeaseExpiredEvent =>
           logger.debug("Lease expired for " + leaseEvent.getSource.getPath)
-          action.onLeaseExpired()
-
-        case _ =>
-          logger.debug(s"Unhandled Lease Event for ${leaseEvent.getSource.getPath} | ${leaseEvent.getClass}")
+          action.onLeaseExpired(LeaseContainerRegistry.get(leaseContainerId).get, requestedSecret)
