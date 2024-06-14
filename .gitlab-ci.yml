@@ -16,11 +16,15 @@ before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
 build:
+  only:
+    - master
   stage: build
   script:
     - gradle build
 
 test:
+  only:
+    - master
   stage: test
   script:
     - gradle test
@@ -35,7 +39,3 @@ danger:
     - npm install
   script:
     - npx danger ci
-  
-workflow:
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_JOB_MANUAL == "true"'
