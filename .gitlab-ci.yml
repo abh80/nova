@@ -1,0 +1,25 @@
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - test
+
+image: gradle:8.4.0-jdk17-jammy
+
+cache:
+  key: "$CI_COMMIT_REF_NAME"
+  paths:
+    - .gradle
+    - build
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
+build:
+  stage: build
+  script:
+    - gradle build
+
+test:
+  stage: test
+  script:
+    - gradle test
+
