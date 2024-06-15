@@ -13,11 +13,6 @@ jobs:
     executor: gradle-executor
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - gradle-cache-{{ .Branch }}-{{ checksum "build.gradle" }}
-            - gradle-cache-{{ .Branch }}
-            - gradle-cache
       - run:
           name: Set GRADLE_USER_HOME
           command: |
@@ -29,7 +24,7 @@ jobs:
           paths:
             - ~/.gradle
             - build
-          key: gradle-cache-{{ .Branch }}-{{ checksum "build.gradle" }}
+          key: gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
 
   test:
     executor: gradle-executor
@@ -37,7 +32,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - gradle-cache-{{ .Branch }}-{{ checksum "build.gradle" }}
+          - gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
           - gradle-cache-{{ .Branch }}
           - gradle-cache
       - run:
@@ -47,7 +42,7 @@ jobs:
           paths:
             - ~/.gradle
             - build
-          key: gradle-cache-{{ .Branch }}-{{ checksum "build.gradle" }}
+          key: gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
 
   danger-bot:
     executor: node-executor
