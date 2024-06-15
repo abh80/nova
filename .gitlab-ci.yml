@@ -3,6 +3,12 @@ stages:
   - test
   - danger
 
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
 image: gradle:8.4.0-jdk17-jammy
 
 cache:
@@ -33,9 +39,3 @@ danger:
     - git clone https://gitlab.com/platinum-open-source/flowops/danger-bot .
     - npm install
     - npx danger ci
-
-workflow:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-    - if: $CI_COMMIT_TAG
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
