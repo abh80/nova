@@ -1,0 +1,75 @@
+version: 2.1
+
+executors:
+  gradle-executor:
+    docker:
+      - image: gradle:8.4.0-jdk17-jammy
+  node-executor:
+    docker:
+      - image: cimg/node:18
+
+jobs:
+  build:
+    executor: gradle-executor
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - gradle-cache-{{ .Branch }}-{{ checksum "build.gradle" }}
+            - gradle-cache-{{ .Branch }}
+            - gradle-cache
+      - run:
+          name: Set GRADLE_USER_HOME
+          command: |
+            export GRADLE_USER_HOME=`pwd`/.gradle
+      - run:
+          name: Gradle Build
+          command: gradle build
+      - save_cache:
+          paths:
+            - ~/.gradle
+            - build
+          key: gradle-cache-{{ .Branch }}-{{ checksum "build.gradle" }}
+
+  test:
+    executor: gradle-executor
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - gradle-cache-{{ .Branch }}-{{ checksum "build.gradle" }}
+          - gradle-cache-{{ .Branch }}
+          - gradle-cache
+      - run:
+          name: Gradle Test
+          command: gradle test
+      - save_cache:
+          paths:
+            - ~/.gradle
+            - build
+          key: gradle-cache-{{ .Branch }}-{{ checksum "build.gradle" }}
+
+  danger-bot:
+    executor: node-executor
+    steps:
+      - checkout
+      - run:
+          name: Clone Danger Bot
+          command: |
+            git clone https://gitlab.com/platinum-open-source/flowops/danger-bot .
+      - run:
+          name: Install dependencies
+          command: |
+            npm install -g npx
+            npm install
+      - run:
+          name: Run Danger
+          command: npx danger ci
+
+workflows:
+  pipeline:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
