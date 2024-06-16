@@ -36,6 +36,7 @@ danger:
   only:
     - merge_requests
   script:
-    - git clone https://gitlab.com/platinum-open-source/flowops/danger-bot .
+    - git clone https://gitlab.com/platinum-open-source/flowops/danger-bot danger-bot
+    - cd danger-bot
     - npm install
     - npx danger ci
