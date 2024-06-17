@@ -1,5 +1,6 @@
 stages:
   - build
+  - lint
   - test
   - danger
 
@@ -21,11 +22,15 @@ before_script:
   - export GRADLE_USER_HOME=`pwd`/.gradle
 
 build:
+  only:
+    - master
   stage: build
   script:
     - gradle build -x test
 
 test:
+  only:
+    - master
   stage: test
   script:
     - gradle test
@@ -40,3 +45,23 @@ danger:
     - cd danger-bot
     - npm install
     - npx danger ci
+
+terraform-lint:
+  stage: lint
+  image: hashicorp/terraform:latest
+  only:
+    - master
+  script:
+    - ./ci/scripts/validate_tf_files
+    - terraform fmt -check=true -recursive
+
+scala-lint:
+  stage: lint
+  only:
+    - master
+  script:
+    - curl -x -o /usr/local/share/coursier https://github.com/coursier/launchers/raw/master/coursier
+    - chmod +x /usr/local/share/coursier
+    - /usr/local/share/coursier setup
+    - /usr/local/share/coursier install scalafmt
+    - scalafmt --test

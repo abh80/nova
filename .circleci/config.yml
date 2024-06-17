@@ -13,6 +13,10 @@ executors:
     docker:
       - image: alpine/git:latest
 
+  terraform-executor:
+    docker:
+      - image: hashicorp/terraform:latest
+
 jobs:
   build:
     executor: gradle-executor
@@ -78,10 +82,40 @@ jobs:
             git remote add github https://${USER_BOT_GITHUB_TOKEN}@github.com/${GITHUB_REPO_TO_SYNC}.git
             git push github ${CIRCLE_BRANCH}
 
+  lint-terraform:
+    executor: terraform-executor
+    steps:
+      - checkout
+      - run:
+          name: Terraform Validate
+          command: |
+            ./ci/scripts/validate_tf_files
+      - run:
+          name: Terraform Lint
+          command: |
+            terraform fmt -check=true -recursive
+
+  lint-scala:
+    executor: gradle-executor
+    steps:
+      - checkout
+      - run:
+          name: Scala Lint
+          command: |
+            curl -x -o /usr/local/share/coursier https://github.com/coursier/launchers/raw/master/coursier
+            chmod +x /usr/local/share/coursier
+            /usr/local/share/coursier setup
+            /usr/local/share/coursier install scalafmt
+            scalafmt --test
+  
+  
+
 workflows:
   pipeline:
     jobs:
       - build
+      - lint-terraform
+      - lint-scala
       - test:
           requires:
             - build

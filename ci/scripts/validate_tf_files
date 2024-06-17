@@ -1,0 +1,17 @@
+#!/bin/bash
+
+tf_dirs=$(find terraform -type d)
+
+for dir in $tf_dirs; do
+  if [ -n "$(find $dir -maxdepth 1 -name '*.tf' -print -quit)" ]; then
+    tf_dirs_list="$tf_dirs_list $dir"
+  fi
+done
+
+curr_dir=$(pwd)
+for dir in $tf_dirs_list; do
+  echo "Validating $dir"
+  cd $dir
+  terraform validate
+  cd $curr_dir
+done

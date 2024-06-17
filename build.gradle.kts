@@ -2,6 +2,7 @@ plugins {
     java
     scala
     application
+    id("org.scoverage") version "8.0.3"
 }
 
 group = "org.plat.flowops"
