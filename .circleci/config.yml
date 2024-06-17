@@ -4,10 +4,14 @@ executors:
   gradle-executor:
     docker:
       - image: gradle:8.4.0-jdk17-jammy
-      
+
   node-executor:
     docker:
-      - image: cimg/node:18
+      - image: cimg/node:18.20.3
+
+  git-executor:
+    docker:
+      - image: alpine/git:latest
 
 jobs:
   build:
@@ -20,7 +24,7 @@ jobs:
             export GRADLE_USER_HOME=`pwd`/.gradle
       - run:
           name: Gradle Build
-          command: gradle build
+          command: gradle build -x test
       - save_cache:
           paths:
             - ~/.gradle
@@ -33,9 +37,9 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
-          - gradle-cache-{{ .Branch }}
-          - gradle-cache
+            - gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
+            - gradle-cache-{{ .Branch }}
+            - gradle-cache
       - run:
           name: Gradle Test
           command: gradle test
@@ -62,6 +66,18 @@ jobs:
           name: Run Danger
           command: npx danger ci
 
+  sync-to-github:
+    executor: git-executor
+    steps:
+      - checkout
+      - run:
+          name: Push to GitHub
+          command: |
+            git config --global user.email "${GIT_EMAIL}"
+            git config --global user.name "${GIT_NAME}"
+            git remote add github https://${USER_BOT_GITHUB_TOKEN}@github.com/${GITHUB_REPO_TO_SYNC}.git
+            git push github ${CIRCLE_BRANCH}
+
 workflows:
   pipeline:
     jobs:
@@ -69,3 +85,11 @@ workflows:
       - test:
           requires:
             - build
+      - sync-to-github:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - master
+                - dev

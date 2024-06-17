@@ -23,7 +23,7 @@ before_script:
 build:
   stage: build
   script:
-    - gradle build
+    - gradle build -x test
 
 test:
   stage: test
