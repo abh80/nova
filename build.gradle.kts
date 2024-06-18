@@ -2,7 +2,6 @@ plugins {
     java
     scala
     application
-    id("org.scoverage") version "8.0.3"
 }
 
 group = "org.plat.flowops"
@@ -51,6 +50,7 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-engine:1.10.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.0")
     testRuntimeOnly("org.scalatestplus:junit-5-10_3:3.2.18.0")
+    testImplementation("org.junit.platform:junit-platform-reporting:1.10.2")
 }
 
 tasks.test {
@@ -61,4 +61,13 @@ tasks.test {
         }
     }
     environment("TEST_VAR", "test_value")
+}
+tasks.withType<Test>().configureEach {
+    val outputDir = reports.junitXml.outputLocation
+    jvmArgumentProviders += CommandLineArgumentProvider {
+        listOf(
+            "-Djunit.platform.reporting.open.xml.enabled=true",
+            "-Djunit.platform.reporting.output.dir=${outputDir.get().asFile.absolutePath}"
+        )
+    }
 }

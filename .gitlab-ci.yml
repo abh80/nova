@@ -34,6 +34,10 @@ test:
   stage: test
   script:
     - gradle test
+  artifacts:
+    when: always
+    paths:
+      - build/test-results/test/**/TEST-*.xml
 
 danger:
   stage: danger
