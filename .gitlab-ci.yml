@@ -38,6 +38,8 @@ test:
     when: always
     paths:
       - build/test-results/test/**/TEST-*.xml
+    reports:
+        junit: build/test-results/test/**/TEST-*.xml
 
 danger:
   stage: danger
