@@ -2,6 +2,13 @@
 echo "Installing coursier..."
 wget -O /usr/local/bin/coursier https://github.com/coursier/launchers/raw/master/coursier
 chmod +x /usr/local/bin/coursier
+
+echo "export PATH=\$PATH:\$HOME/.local/share/coursier/bin" >> ~/.bashrc
+source ~/.bashrc
+echo "export PATH=\$PATH:\$HOME/.local/share/coursier/bin" >> ~/.profile
+source ~/.profile
+
+echo "Setting up coursier..."
 coursier setup
 
 echo "Installing scalafmt..."
