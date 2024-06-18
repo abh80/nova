@@ -64,4 +64,4 @@ scala-lint:
   script:
     - chmod +x ./ci/scripts/install_coursier_and_scalafmt
     - ./ci/scripts/install_coursier_and_scalafmt
-    - scalafmt --test
+    - ~/.local/share/coursier/bin/scalafmt --test
