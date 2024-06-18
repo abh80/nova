@@ -1,0 +1,10 @@
+#!/bin/bash
+echo "Installing coursier..."
+wget -O /usr/local/bin/coursier https://github.com/coursier/launchers/raw/master/coursier
+chmod +x /usr/local/bin/coursier
+coursier setup
+
+echo "Installing scalafmt..."
+coursier install scalafmt
+
+echo "Installation completed."

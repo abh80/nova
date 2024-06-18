@@ -1,0 +1,8 @@
+#!/bin/bash
+echo "Installing Terraform..."
+wget -O terraform.zip https://releases.hashicorp.com/terraform/1.8.5/terraform_1.8.5_linux_amd64.zip
+unzip terraform.zip -d /usr/local/bin/
+rm terraform.zip
+chmod +x /usr/local/bin/terraform
+echo "Terraform installed successfully."
+terraform --version

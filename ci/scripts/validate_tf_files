@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo "Validating Terraform files..."
 tf_dirs=$(find terraform -type d)
 
 for dir in $tf_dirs; do
@@ -8,10 +8,8 @@ for dir in $tf_dirs; do
   fi
 done
 
-curr_dir=$(pwd)
 for dir in $tf_dirs_list; do
   echo "Validating $dir"
-  cd $dir
-  terraform validate
-  cd $curr_dir
+  terraform -chdir="$dir" validate
 done
+echo "All directories validated successfully."

@@ -13,10 +13,6 @@ executors:
     docker:
       - image: alpine/git:latest
 
-  terraform-executor:
-    docker:
-      - image: hashicorp/terraform:latest
-
 jobs:
   build:
     executor: gradle-executor
@@ -83,12 +79,18 @@ jobs:
             git push github ${CIRCLE_BRANCH}
 
   lint-terraform:
-    executor: terraform-executor
+    executor: gradle-executor
     steps:
       - checkout
       - run:
+          name: Install terraform
+          command: |
+            chmod +x ./ci/scripts/install_tf
+            ./ci/scripts/install_tf
+      - run:
           name: Terraform Validate
           command: |
+            chmod +x ./ci/scripts/validate_tf_files
             ./ci/scripts/validate_tf_files
       - run:
           name: Terraform Lint
@@ -100,12 +102,13 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install Coursier and Scalafmt
+          command: |
+            chmod +x ./ci/scripts/install_coursier_and_scalafmt
+            ./ci/scripts/install_coursier_and_scalafmt
+      - run:
           name: Scala Lint
           command: |
-            curl -x -o /usr/local/share/coursier https://github.com/coursier/launchers/raw/master/coursier
-            chmod +x /usr/local/share/coursier
-            /usr/local/share/coursier setup
-            /usr/local/share/coursier install scalafmt
             scalafmt --test
   
   

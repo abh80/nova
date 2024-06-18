@@ -48,10 +48,12 @@ danger:
 
 terraform-lint:
   stage: lint
-  image: hashicorp/terraform:latest
   only:
     - master
   script:
+    - chmod +x ./ci/scripts/install_tf
+    - ./ci/scripts/install_tf
+    - chmod +x ./ci/scripts/validate_tf_files
     - ./ci/scripts/validate_tf_files
     - terraform fmt -check=true -recursive
 
@@ -60,8 +62,6 @@ scala-lint:
   only:
     - master
   script:
-    - curl -x -o /usr/local/share/coursier https://github.com/coursier/launchers/raw/master/coursier
-    - chmod +x /usr/local/share/coursier
-    - /usr/local/share/coursier setup
-    - /usr/local/share/coursier install scalafmt
+    - chmod +x ./ci/scripts/install_coursier_and_scalafmt
+    - ./ci/scripts/install_coursier_and_scalafmt
     - scalafmt --test
