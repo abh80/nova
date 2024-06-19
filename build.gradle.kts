@@ -2,6 +2,7 @@ plugins {
     java
     scala
     application
+    id("jacoco")
 }
 
 group = "org.plat.flowops"
@@ -51,17 +52,20 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.0")
     testRuntimeOnly("org.scalatestplus:junit-5-10_3:3.2.18.0")
     testImplementation("org.junit.platform:junit-platform-reporting:1.10.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.2")
+    testImplementation("org.mockito:mockito-core:5.12.0")
 }
 
 tasks.test {
     useJUnitPlatform {
-        includeEngines("scalatest")
+        includeEngines("scalatest", "junit-jupiter")
         testLogging {
             events("passed", "skipped", "failed")
         }
     }
     environment("TEST_VAR", "test_value")
 }
+
 tasks.withType<Test>().configureEach {
     val outputDir = reports.junitXml.outputLocation
     jvmArgumentProviders += CommandLineArgumentProvider {
@@ -69,5 +73,30 @@ tasks.withType<Test>().configureEach {
             "-Djunit.platform.reporting.open.xml.enabled=true",
             "-Djunit.platform.reporting.output.dir=${outputDir.get().asFile.absolutePath}"
         )
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.11"
+    reportsDirectory = layout.buildDirectory.dir("customJacocoReportDir")
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    val mainSrc = "${project.projectDir}/src/main/scala"
+    val fileFilter = "**/*\$log\$*.class"
+
+    val classFiles = fileTree("${buildDir}/classes/scala/main") {
+        exclude(fileFilter)
+        include("**/*.class")
+    }
+
+    sourceDirectories = files(mainSrc)
+    classDirectories = files(classFiles)
+
+    reports {
+        xml.required.set(true)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
     }
 }

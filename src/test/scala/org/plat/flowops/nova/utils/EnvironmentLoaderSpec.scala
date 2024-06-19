@@ -33,3 +33,12 @@ class EnvironmentLoaderSpec extends AnyFlatSpec with MockFactory with Matchers:
 
     exception.getMessage shouldBe s"Environment variable $varName is required but not set"
   }
+
+  it should "return the value of required environment variable if set" in {
+    val varName  = "TEST_VAR"
+    val envValue = "test_value"
+
+    val result = EnvironmentLoader.getRequiredEnvironmentVariable(varName)
+
+    result shouldEqual envValue
+  }
