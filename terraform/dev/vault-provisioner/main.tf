@@ -77,6 +77,6 @@ resource "vault_database_secret_backend_role" "app_nova_role" {
   name                = "app-nova"
   db_name             = vault_database_secret_backend_connection.psql_db_nova.name
   creation_statements = ["CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';"]
-  default_ttl         = 60
-  max_ttl             = 60
+  default_ttl         = 7200
+  max_ttl             = 7200
 }

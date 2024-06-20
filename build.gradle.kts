@@ -78,7 +78,7 @@ tasks.withType<Test>().configureEach {
 
 jacoco {
     toolVersion = "0.8.11"
-    reportsDirectory = layout.buildDirectory.dir("customJacocoReportDir")
+    reportsDirectory = layout.buildDirectory.dir("jacoco")
 }
 
 tasks.jacocoTestReport {
@@ -97,6 +97,6 @@ tasks.jacocoTestReport {
     reports {
         xml.required.set(true)
         csv.required.set(false)
-        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+        html.required.set(true)
     }
 }
