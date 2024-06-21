@@ -6,6 +6,10 @@ resource "docker_container" "vault" {
     host_path      = "${path.cwd}/vault/config"
     read_only      = false
   }
+  volumes {
+    container_path = "/vault/path"
+    read_only      = true
+  }
   networks_advanced {
     name         = docker_network.main-net.id
     ipv4_address = "11.0.0.2"

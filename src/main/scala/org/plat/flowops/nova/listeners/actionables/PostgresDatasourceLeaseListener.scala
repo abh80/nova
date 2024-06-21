@@ -18,4 +18,5 @@ class PostgresDatasourceLeaseListener extends CustomLeaseActionable with LazyLog
     val password = secrets.get("password")
     logger.debug(s"Renewing database connection with ${username}:${password}")
     val config = PostgresConfig.createDatabaseConfig(username, password)
-    PostgresManager.connect(config)
+
+    PostgresManager.getInstance.connect(config)

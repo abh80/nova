@@ -24,7 +24,6 @@ object Libs {
     const val JETTY_SERVER = "org.eclipse.jetty:jetty-server:12.0.6"
     const val JETTY_WEBAPP = "org.eclipse.jetty:jetty-webapp:10.0.17"
     const val LOGBACK_CLASSIC = "ch.qos.logback:logback-classic:1.5.0"
-    const val JOBRUNR = "org.jobrunr:jobrunr:6.3.5"
     const val JDBC_POSTGRES = "org.postgresql:postgresql:42.7.2"
     const val SPRING_VAULT_CORE = "org.springframework.vault:spring-vault-core:3.1.1"
     const val SCALA_MOCK = "org.scalamock:scalamock_3:6.0.0"
@@ -40,7 +39,6 @@ dependencies {
     implementation(Libs.LOGBACK_CLASSIC)
     implementation(Libs.JETTY_WEBAPP)
     implementation(Libs.JGIT_HTTP)
-    implementation(Libs.JOBRUNR)
     implementation(Libs.JDBC_POSTGRES)
     implementation(Libs.SPRING_VAULT_CORE)
     testImplementation(Libs.SCALA_TEST)
@@ -48,6 +46,8 @@ dependencies {
     testImplementation(Libs.SCALACTIC)
     implementation("com.typesafe.slick:slick_3:3.5.1")
     implementation("com.typesafe.slick:slick-hikaricp_3:3.5.1")
+    implementation("com.github.tminglei:slick-pg_3:0.22.2")
+    implementation("com.itv:quartz4s-core_3:1.0.4")
     testRuntimeOnly("org.junit.platform:junit-platform-engine:1.10.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.0")
     testRuntimeOnly("org.scalatestplus:junit-5-10_3:3.2.18.0")
