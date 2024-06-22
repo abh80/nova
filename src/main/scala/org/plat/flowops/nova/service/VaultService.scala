@@ -13,5 +13,6 @@ object VaultService:
     val endpoint  = VaultEndpoint.from(vault_server_addr)
     val tokenAuth = new TokenAuthentication(vault_app_token)
     vaultTemplate = new VaultTemplate(endpoint, tokenAuth)
+    vaultTemplate.afterPropertiesSet()
 
   def getTemplate: VaultTemplate = vaultTemplate

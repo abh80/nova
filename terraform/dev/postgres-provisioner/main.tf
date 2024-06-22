@@ -6,14 +6,24 @@ terraform {
     }
   }
 }
-variable "password" {
+variable "postgres_db_password" {
   type = string
 }
+
+variable "postgres_host" {
+  type    = string
+  default = "127.0.0.1"
+}
+
+variable "postgres_username" {
+  type    = string
+  default = "postgres"
+}
 provider "postgresql" {
-  host     = "127.0.0.1"
+  host     = var.postgres_host
   port     = 5432
-  username = "postgres"
-  password = var.password
+  username = var.postgres_username
+  password = var.postgres_db_password
   sslmode  = "disable"
 }
 
