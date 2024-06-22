@@ -83,5 +83,4 @@ terraform.rc
 
 .idea/
 
-
-node_modules
+.metals

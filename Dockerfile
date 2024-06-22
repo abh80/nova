@@ -37,5 +37,5 @@ RUN wget -O /tmp/vault.zip https://releases.hashicorp.com/vault/1.17.0/vault_1.1
 COPY ./scripts/entrypoint ./entrypoint.sh
 RUN chmod +x entrypoint.sh
 
-COPY ./pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
+COPY ./pg_hba.conf /etc/postgresql/14/main
 ENTRYPOINT [ "./entrypoint.sh" ]
