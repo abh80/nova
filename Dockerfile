@@ -1,6 +1,7 @@
 FROM gradle:8.4.0-jdk17-jammy
 
 COPY ./ci/scripts /scripts
+
 RUN chmod +x /scripts/*
 # UPDATE DEPENDENCIES
 RUN apt-get update && apt-get upgrade -y && apt-get install -y curl wget unzip zip jq git
@@ -25,9 +26,16 @@ RUN service postgresql start \
 
 USER root
 
+
 # INSTALL VAULT
 RUN wget -O /tmp/vault.zip https://releases.hashicorp.com/vault/1.17.0/vault_1.17.0_linux_amd64.zip \
     && unzip -j /tmp/vault.zip vault -d /usr/local/bin \
     && chmod +x /usr/local/bin/vault \
     && rm /tmp/vault.zip \
     && vault --version
+
+COPY ./scripts/entrypoint ./entrypoint.sh
+RUN chmod +x entrypoint.sh
+
+COPY ./pg_hba.conf /etc/postgresql/14/main/pg_hba.conf
+ENTRYPOINT [ "./entrypoint.sh" ]

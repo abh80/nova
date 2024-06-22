@@ -1,21 +1,8 @@
 image:
-  file: Dockerfile
+  file: dockerFile
   context: .
 
 tasks:
-  - name: Start Postgres
-    command: |
-      echo "Starting Postgres"
-      service postgresql start
-
-  - name: Set Enviroment Variables
-    command: |
-      echo "Setting Enviroment Variables"
-      echo "export GRADLE_USER_HOME=`pwd`/.gradle" >> ~/.bashrc
-      echo "export TF_VAR_postgres_username=postgres" >> ~/.bashrc
-      echo "export TF_VAR_postgres_db_password=postgres" >> ~/.bashrc
-      echo "TF_VAR_postgres_host=localhost" >> ~/.bashrc
-
   - name: Run vault server
     command: |
       echo "Running vault server"
@@ -27,11 +14,22 @@ tasks:
 
   - name: Run Terraform
     command: |
+      export TF_VAR_vault_token=root
+      export TF_VAR_postgres_username=postgres
+      export TF_VAR_postgres_db_password=postgres
+      export TF_VAR_postgres_host=localhost
+      
       echo "Running Terraform"
-      terraform -chdir=terraform/dev/postgres-provisioner init
+      TF_VAR_vault_token=root terraform -chdir=terraform/dev/postgres-provisioner init
       terraform -chdir=terraform/dev/postgres-provisioner apply -auto-approve
 
       terraform -chdir=terraform/dev/vault-provisioner init
       terraform -chdir=terraform/dev/vault-provisioner apply -auto-approve
 
       echo "Terraform apply completed"
+
+  - name: Run git setup
+    command: |
+      echo "Git setup"
+      chmod +x ./scripts/setup
+      ./scripts/setup
