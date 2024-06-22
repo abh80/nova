@@ -6,16 +6,23 @@ terraform {
     }
   }
 }
-variable "token" {
+variable "vault_token" {
   type = string
 }
 variable "postgres_db_password" {
   type = string
 }
-
+variable "postgres_host" {
+  type    = string
+  default = "11.0.0.3"
+}
+variable "postgres_username" {
+  type    = string
+  default = "postgres"
+}
 provider "vault" {
   address = "http://127.0.0.1:8200"
-  token   = var.token
+  token   = var.vault_token
 }
 resource "vault_policy" "admins" {
   name   = "admins"
@@ -66,17 +73,21 @@ resource "vault_database_secret_backend_connection" "psql_db_nova" {
   verify_connection = true
   plugin_name       = "postgresql-database-plugin"
   postgresql {
-    username       = "postgres"
+    username       = var.postgres_username
     password       = var.postgres_db_password
-    connection_url = "postgresql://{{username}}:{{password}}@11.0.0.3:5432/main?sslmode=disable"
+    connection_url = "postgresql://{{username}}:{{password}}@${var.postgres_host}:5432/main?sslmode=disable"
   }
 }
 
 resource "vault_database_secret_backend_role" "app_nova_role" {
-  backend             = vault_database_secret_backend_connection.psql_db_nova.backend
-  name                = "app-nova"
-  db_name             = vault_database_secret_backend_connection.psql_db_nova.name
-  creation_statements = ["CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';"]
-  default_ttl         = 60
-  max_ttl             = 60
+  backend = vault_database_secret_backend_connection.psql_db_nova.backend
+  name    = "app-nova"
+  db_name = vault_database_secret_backend_connection.psql_db_nova.name
+  creation_statements = [
+    "CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';",
+    "GRANT ALL PRIVILEGES ON SCHEMA nova TO \"{{name}}\";",
+    "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA nova TO \"{{name}}\";"
+  ]
+  default_ttl = 7200
+  max_ttl     = 7200
 }
