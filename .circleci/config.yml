@@ -148,9 +148,6 @@ workflows:
           requires:
             - build
             - lint-scala
-      - upload-coverage:
-          requires:
-            - test
       - sync-to-github:
           requires:
             - test
