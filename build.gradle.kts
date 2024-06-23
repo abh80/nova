@@ -69,6 +69,7 @@ jacoco {
     toolVersion = "0.8.11"
     reportsDirectory = layout.buildDirectory.dir("jacoco")
 }
+
 sourceSets {
     create("integrationTest") {
         scala.srcDirs("src/test/scala/org/plat/flowops/testing/nova/integration")
@@ -90,25 +91,6 @@ sourceSets {
 }
 
 
-tasks.jacocoTestReport {
-    dependsOn(tasks.test)
-    val mainSrc = "${project.projectDir}/src/main/scala"
-    val fileFilter = listOf("**/MyPostgresProfile*")
-
-    val classFiles = fileTree("${buildDir}/classes/scala/main") {
-        exclude(fileFilter)
-        include("**/*.class")
-    }
-
-    sourceDirectories = files(mainSrc)
-    classDirectories = files(classFiles)
-
-    reports {
-        xml.required.set(true)
-        csv.required.set(false)
-        html.required.set(true)
-    }
-}
 
 tasks {
     val integrationTest by registering(Test::class) {
@@ -136,5 +118,29 @@ tasks {
     test {
         dependsOn(unitTest, integrationTest)
         finalizedBy(jacocoTestReport)
+    }
+
+    jacocoTestReport {
+        dependsOn(test)
+        val mainSrc = "${project.projectDir}/src/main/scala"
+        val fileFilter = listOf("**/MyPostgresProfile*")
+
+        val classFiles = fileTree("${buildDir}/classes/scala/main") {
+            exclude(fileFilter)
+            include("**/*.class")
+        }
+        val executionFiles = fileTree("${buildDir}/jacoco") {
+            include("**/*.exec")
+        }
+
+        executionData = files(executionFiles)
+        sourceDirectories = files(mainSrc)
+        classDirectories = files(classFiles)
+
+        reports {
+            xml.required.set(true)
+            csv.required.set(false)
+            html.required.set(true)
+        }
     }
 }
