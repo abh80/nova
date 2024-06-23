@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  codecov: codecov/codecov@4.0.1
+
 executors:
   gradle-executor:
     docker:
@@ -58,6 +61,18 @@ jobs:
             - ~/.gradle
             - build
           key: gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
+
+  upload-coverage:
+    executor: node-executor
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
+            - gradle-cache-{{ .Branch }}
+            - gradle-cache
+      - codecov/upload:
+          file: build/jacoco/test/jacocoTestReport.xml
 
   danger-bot:
     executor: node-executor
@@ -120,8 +135,8 @@ jobs:
           name: Scala Lint
           command: |
             ~/.local/share/coursier/bin/scalafmt --test
-  
-  
+
+
 
 workflows:
   pipeline:
