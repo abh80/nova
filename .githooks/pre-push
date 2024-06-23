@@ -42,7 +42,7 @@ else
   printf "\b\b\b ✅\n"
   echo
   echo "😎 All tests passed!"
-  test_coverage=$(cat build/jacoco/test/html/index.html | grep -o 'Total[^%]*%' | grep -o '[0-9]*')
+  test_coverage=$(cat build/jacoco/test/html/index.html | grep -o 'Total[^%]*%' | grep -o '[0-9]*%')
   echo "📊 Test coverage: $test_coverage%"
 fi
 echo
