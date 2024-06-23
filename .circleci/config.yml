@@ -53,9 +53,6 @@ jobs:
             mkdir -p ./build/test-results-filtered
             find build/test-results/test -name "TEST-*.xml" -exec cp {} ./build/test-results-filtered \;
 
-      - codecov/upload:
-          file: build/jacoco/test/jacocoTestReport.xml
-
       - store_test_results:
           path: build/test-results-filtered
 
@@ -64,6 +61,18 @@ jobs:
             - ~/.gradle
             - build
           key: gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
+
+  upload-coverage:
+    executor: node-executor
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - gradle-cache-{{ .Branch }}-{{ checksum "build.gradle.kts" }}
+            - gradle-cache-{{ .Branch }}
+            - gradle-cache
+      - codecov/upload:
+          file: build/jacoco/test/jacocoTestReport.xml
 
   danger-bot:
     executor: node-executor
@@ -139,6 +148,9 @@ workflows:
           requires:
             - build
             - lint-scala
+      - upload-coverage:
+          requires:
+            - test
       - sync-to-github:
           requires:
             - test
