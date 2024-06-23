@@ -55,18 +55,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.2")
     testImplementation("org.mockito:mockito-core:5.12.0")
 }
-
-tasks.test {
-    useJUnitPlatform {
-        includeEngines("scalatest", "junit-jupiter")
-        testLogging {
-            events("passed", "skipped", "failed")
-        }
-    }
-    environment("TEST_VAR", "test_value")
-    environment("POSTGRES_URL", "jdbc:postgresql://localhost:5432/test")
-}
-
 tasks.withType<Test>().configureEach {
     val outputDir = reports.junitXml.outputLocation
     jvmArgumentProviders += CommandLineArgumentProvider {
@@ -81,6 +69,26 @@ jacoco {
     toolVersion = "0.8.11"
     reportsDirectory = layout.buildDirectory.dir("jacoco")
 }
+sourceSets {
+    create("integrationTest") {
+        scala.srcDirs("src/test/scala/org/plat/flowops/testing/nova/integration")
+        java.srcDirs("src/test/java/org/plat/flowops/testing/nova/integration")
+
+        resources.srcDirs("src/test/resources")
+        compileClasspath += sourceSets["main"].output + configurations["testRuntimeClasspath"]
+        runtimeClasspath += output + compileClasspath
+    }
+
+    create("unitTest") {
+        scala.srcDirs("src/test/scala/org/plat/flowops/testing/nova/unit")
+        java.srcDirs("src/test/java/org/plat/flowops/testing/nova/unit")
+
+        resources.srcDirs("src/test/resources")
+        compileClasspath += sourceSets["main"].output + configurations["testRuntimeClasspath"]
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
 
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
@@ -99,5 +107,34 @@ tasks.jacocoTestReport {
         xml.required.set(true)
         csv.required.set(false)
         html.required.set(true)
+    }
+}
+
+tasks {
+    val integrationTest by registering(Test::class) {
+        description = "Runs the integration tests."
+        group = "verification"
+        testClassesDirs = sourceSets["integrationTest"].output.classesDirs
+        classpath = sourceSets["integrationTest"].runtimeClasspath
+        useJUnitPlatform()
+    }
+
+    val unitTest by registering(Test::class) {
+        description = "Runs the unit tests."
+        group = "verification"
+        testClassesDirs = sourceSets["unitTest"].output.classesDirs
+        classpath = sourceSets["unitTest"].runtimeClasspath
+        useJUnitPlatform()
+        environment("TEST_VAR", "test_value")
+        environment("POSTGRES_URL", "jdbc:postgresql://localhost:5432/test")
+    }
+
+    integrationTest {
+        mustRunAfter("unitTest")
+    }
+
+    test {
+        dependsOn(unitTest, integrationTest)
+        finalizedBy(jacocoTestReport)
     }
 }

@@ -1,6 +1,7 @@
-package org.plat.flowops.nova.service;
+package org.plat.flowops.testing.nova.unit.service;
 
 import org.junit.jupiter.api.Test;
+import org.plat.flowops.nova.service.VaultService;
 import org.springframework.vault.core.VaultTemplate;
 
 import static org.junit.jupiter.api.Assertions.*;

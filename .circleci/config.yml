@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  codecov: codecov/codecov@4.0.1
+
 executors:
   gradle-executor:
     docker:
@@ -49,6 +52,9 @@ jobs:
           command: |
             mkdir -p ./build/test-results-filtered
             find build/test-results/test -name "TEST-*.xml" -exec cp {} ./build/test-results-filtered \;
+
+      - codecov/upload:
+          file: build/jacoco/test/jacocoTestReport.xml
 
       - store_test_results:
           path: build/test-results-filtered
@@ -120,8 +126,8 @@ jobs:
           name: Scala Lint
           command: |
             ~/.local/share/coursier/bin/scalafmt --test
-  
-  
+
+
 
 workflows:
   pipeline:
