@@ -64,6 +64,7 @@ tasks.test {
         }
     }
     environment("TEST_VAR", "test_value")
+    environment("POSTGRES_URL", "jdbc:postgresql://localhost:5432/test")
 }
 
 tasks.withType<Test>().configureEach {
@@ -84,7 +85,7 @@ jacoco {
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
     val mainSrc = "${project.projectDir}/src/main/scala"
-    val fileFilter = "**/*\$log\$*.class"
+    val fileFilter = listOf("**/MyPostgresProfile*")
 
     val classFiles = fileTree("${buildDir}/classes/scala/main") {
         exclude(fileFilter)
