@@ -1,6 +1,7 @@
-package org.plat.flowops.nova.utils
+package org.plat.flowops.testing.nova.unit.utils
 
 import org.plat.flowops.nova.constants.DefaultEnvironmentConstants
+import org.plat.flowops.nova.utils.EnvironmentLoader
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers

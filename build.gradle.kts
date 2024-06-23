@@ -55,17 +55,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.2")
     testImplementation("org.mockito:mockito-core:5.12.0")
 }
-
-tasks.test {
-    useJUnitPlatform {
-        includeEngines("scalatest", "junit-jupiter")
-        testLogging {
-            events("passed", "skipped", "failed")
-        }
-    }
-    environment("TEST_VAR", "test_value")
-}
-
 tasks.withType<Test>().configureEach {
     val outputDir = reports.junitXml.outputLocation
     jvmArgumentProviders += CommandLineArgumentProvider {
@@ -81,22 +70,77 @@ jacoco {
     reportsDirectory = layout.buildDirectory.dir("jacoco")
 }
 
-tasks.jacocoTestReport {
-    dependsOn(tasks.test)
-    val mainSrc = "${project.projectDir}/src/main/scala"
-    val fileFilter = "**/*\$log\$*.class"
+sourceSets {
+    create("integrationTest") {
+        scala.srcDirs("src/test/scala/org/plat/flowops/testing/nova/integration")
+        java.srcDirs("src/test/java/org/plat/flowops/testing/nova/integration")
 
-    val classFiles = fileTree("${buildDir}/classes/scala/main") {
-        exclude(fileFilter)
-        include("**/*.class")
+        resources.srcDirs("src/test/resources")
+        compileClasspath += sourceSets["main"].output + configurations["testRuntimeClasspath"]
+        runtimeClasspath += output + compileClasspath
     }
 
-    sourceDirectories = files(mainSrc)
-    classDirectories = files(classFiles)
+    create("unitTest") {
+        scala.srcDirs("src/test/scala/org/plat/flowops/testing/nova/unit")
+        java.srcDirs("src/test/java/org/plat/flowops/testing/nova/unit")
 
-    reports {
-        xml.required.set(true)
-        csv.required.set(false)
-        html.required.set(true)
+        resources.srcDirs("src/test/resources")
+        compileClasspath += sourceSets["main"].output + configurations["testRuntimeClasspath"]
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
+
+
+tasks {
+    val integrationTest by registering(Test::class) {
+        description = "Runs the integration tests."
+        group = "verification"
+        testClassesDirs = sourceSets["integrationTest"].output.classesDirs
+        classpath = sourceSets["integrationTest"].runtimeClasspath
+        useJUnitPlatform()
+    }
+
+    val unitTest by registering(Test::class) {
+        description = "Runs the unit tests."
+        group = "verification"
+        testClassesDirs = sourceSets["unitTest"].output.classesDirs
+        classpath = sourceSets["unitTest"].runtimeClasspath
+        useJUnitPlatform()
+        environment("TEST_VAR", "test_value")
+        environment("POSTGRES_URL", "jdbc:postgresql://localhost:5432/test")
+    }
+
+    integrationTest {
+        mustRunAfter("unitTest")
+    }
+
+    test {
+        dependsOn(unitTest, integrationTest)
+        finalizedBy(jacocoTestReport)
+    }
+
+    jacocoTestReport {
+        dependsOn(test)
+        val mainSrc = "${project.projectDir}/src/main/scala"
+        val fileFilter = listOf("**/MyPostgresProfile*")
+
+        val classFiles = fileTree("${buildDir}/classes/scala/main") {
+            exclude(fileFilter)
+            include("**/*.class")
+        }
+        val executionFiles = fileTree("${buildDir}/jacoco") {
+            include("**/*.exec")
+        }
+
+        executionData = files(executionFiles)
+        sourceDirectories = files(mainSrc)
+        classDirectories = files(classFiles)
+
+        reports {
+            xml.required.set(true)
+            csv.required.set(false)
+            html.required.set(true)
+        }
     }
 }
