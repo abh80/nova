@@ -51,7 +51,7 @@ jobs:
           name: Filter Test Results
           command: |
             mkdir -p ./build/test-results-filtered
-            find build/test-results/test -name "TEST-*.xml" -exec cp {} ./build/test-results-filtered \;
+            find build/test-results/ -type f -name 'TEST-*.xml' -exec cp {} ./build/test-results-filtered \;
 
       - store_test_results:
           path: build/test-results-filtered

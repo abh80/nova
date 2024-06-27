@@ -35,11 +35,11 @@ test:
   artifacts:
     when: always
     paths:
-      - build/test-results/test/**/TEST-*.xml
+      - build/test-results/**/TEST-*.xml
       - build/jacoco/test/jacocoTestReport.xml
     expire_in: 30 days
     reports:
-        junit: build/test-results/test/**/TEST-*.xml
+        junit: build/test-results/**/TEST-*.xml
 
 danger:
   stage: danger
