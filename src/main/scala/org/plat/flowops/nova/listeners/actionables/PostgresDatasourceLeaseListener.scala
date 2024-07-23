@@ -1,12 +1,15 @@
 package org.plat.flowops.nova.listeners.actionables
 import com.typesafe.scalalogging.LazyLogging
-import org.plat.flowops.nova.database.{ PostgresConfig, PostgresManager }
+import jakarta.inject.Inject
+import org.plat.flowops.nova.database.{PostgresConfig, PostgresManager}
 import org.springframework.vault.core.lease.SecretLeaseContainer
 import org.springframework.vault.core.lease.domain.RequestedSecret
 
 import java.util
 
-class PostgresDatasourceLeaseListener extends CustomLeaseActionable with LazyLogging:
+class PostgresDatasourceLeaseListener @Inject() (database: PostgresManager)
+    extends CustomLeaseActionable
+    with LazyLogging:
   override def onLeaseExpired(
       secretLeaseContainer: SecretLeaseContainer,
       requestedSecret: RequestedSecret
@@ -19,4 +22,4 @@ class PostgresDatasourceLeaseListener extends CustomLeaseActionable with LazyLog
     logger.debug(s"Renewing database connection with ${username}:${password}")
     val config = PostgresConfig.createDatabaseConfig(username, password)
 
-    PostgresManager.getInstance.connect(config)
+    database.connect(config)
