@@ -1,7 +1,7 @@
 package org.plat.flowops.nova.listeners.actionables
 import com.typesafe.scalalogging.LazyLogging
 import jakarta.inject.Inject
-import org.plat.flowops.nova.database.{PostgresConfig, PostgresManager}
+import org.plat.flowops.nova.database.{ PostgresConfig, PostgresManager }
 import org.springframework.vault.core.lease.SecretLeaseContainer
 import org.springframework.vault.core.lease.domain.RequestedSecret
 

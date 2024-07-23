@@ -6,7 +6,7 @@ import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.transport.resolver.RepositoryResolver
 import org.plat.flowops.nova.utils.HttpRequestUtil
 
-import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
+import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
 
 class GitHttpServlet extends GitServlet with LazyLogging:
   private val API_BACKEND_REGEX =
@@ -30,4 +30,3 @@ class GitRepositoryResolver(storagePath: String) extends RepositoryResolver[Http
     val repositoryPath = s"$storagePath/$name"
     val user_base_path = name.split("/").head
     ???
-                       

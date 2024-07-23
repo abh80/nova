@@ -1,6 +1,6 @@
 package org.plat.flowops.nova.tasks.injector
 
-import com.google.inject.{Guice, Injector}
+import com.google.inject.{ Guice, Injector }
 import org.plat.flowops.nova.database.DatabaseModule
 
 object InjectorHandler:

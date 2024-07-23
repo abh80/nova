@@ -5,12 +5,9 @@ import com.typesafe.scalalogging.LazyLogging
 import org.plat.flowops.nova.database.DatabaseModule
 import org.plat.flowops.nova.tasks.Task
 
-object InitializeInjector extends Task with LazyLogging{
-    override def execute(): Unit = {
-        logger.debug("Initializing Injector...")
-        InjectorHandler.initialize()
-    }
+object InitializeInjector extends Task with LazyLogging:
+  override def execute(): Unit =
+    logger.debug("Initializing Injector...")
+    InjectorHandler.initialize()
 
-    override def run(): Unit = ()
-
-}
+  override def run(): Unit = ()

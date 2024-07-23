@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import com.typesafe.scalalogging.LazyLogging
 import org.plat.flowops.nova.constants.DatabaseTypes
 import org.plat.flowops.nova.listeners.events.*
-import org.plat.flowops.nova.listeners.{Event, EventListenerAdapter}
+import org.plat.flowops.nova.listeners.{ Event, EventListenerAdapter }
 import slick.jdbc.PostgresProfile.api.*
 
 import javax.sql.DataSource
