@@ -2,11 +2,13 @@ package org.plat.flowops.nova.database
 
 import com.google.inject.Inject
 import com.typesafe.scalalogging.LazyLogging
-import org.plat.flowops.nova.constants.DatabaseTypes
+import org.plat.flowops.nova.constants.{ DatabaseTypes, InternalConstants }
 import org.plat.flowops.nova.listeners.events.*
 import org.plat.flowops.nova.listeners.{ Event, EventListenerAdapter }
+import slick.jdbc.JdbcBackend.{ BaseSession, Database, Session }
 import slick.jdbc.PostgresProfile.api.*
 
+import javax.servlet.http.HttpServletRequest
 import javax.sql.DataSource
 
 class PostgresManager @Inject() (eventListener: EventListenerAdapter)
@@ -48,3 +50,5 @@ class PostgresManager @Inject() (eventListener: EventListenerAdapter)
   override def isConnected: Boolean = synchronized(db != null)
 
   def getDb: Database = db
+
+  def apply(): Database = db

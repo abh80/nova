@@ -1,7 +1,8 @@
 package org.plat.flowops.nova.helper
 
 import org.plat.flowops.nova.database.job.SchemaCreationJob
-import org.plat.flowops.nova.service.{ JobRegistry, JobTriggerRegistry }
+import org.plat.flowops.nova.registry.JobRegistry
+import org.plat.flowops.nova.registry.JobTriggerRegistry
 import org.quartz.impl.StdSchedulerFactory
 
 object JobRunner:

@@ -2,7 +2,7 @@ package org.plat.flowops.nova.listeners
 
 import com.typesafe.scalalogging.LazyLogging
 import org.plat.flowops.nova.listeners.actionables.CustomLeaseActionable
-import org.plat.flowops.nova.service.LeaseContainerRegistry
+import org.plat.flowops.nova.registry.LeaseContainerRegistry
 import org.springframework.vault.core.lease.domain.RequestedSecret
 import org.springframework.vault.core.lease.event.*
 

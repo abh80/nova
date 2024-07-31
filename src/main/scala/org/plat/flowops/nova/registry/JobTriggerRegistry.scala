@@ -1,4 +1,4 @@
-package org.plat.flowops.nova.service
+package org.plat.flowops.nova.registry
 
 import org.plat.flowops.nova.utils.TBaseRegistry
 import org.quartz.Trigger

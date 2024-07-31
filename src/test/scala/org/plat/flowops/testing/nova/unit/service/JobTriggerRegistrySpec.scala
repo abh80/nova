@@ -1,6 +1,6 @@
 package org.plat.flowops.testing.nova.unit.service
 
-import org.plat.flowops.nova.service.JobTriggerRegistry
+import org.plat.flowops.nova.registry.JobTriggerRegistry
 import org.quartz.{ SimpleScheduleBuilder, Trigger, TriggerBuilder }
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.plat.flowops.nova.listeners.CustomLeaseListener;
 import org.plat.flowops.nova.listeners.actionables.CustomLeaseActionable;
-import org.plat.flowops.nova.service.LeaseContainerRegistry;
+import org.plat.flowops.nova.registry.LeaseContainerRegistry;
 import org.springframework.vault.core.lease.SecretLeaseContainer;
 import org.springframework.vault.core.lease.domain.RequestedSecret;
 import org.springframework.vault.core.lease.event.SecretLeaseCreatedEvent;

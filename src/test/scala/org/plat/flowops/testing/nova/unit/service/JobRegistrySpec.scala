@@ -1,6 +1,6 @@
 package org.plat.flowops.testing.nova.unit.service
 
-import org.plat.flowops.nova.service.JobRegistry
+import org.plat.flowops.nova.registry.JobRegistry
 import org.quartz.{ JobBuilder, JobDetail }
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.flatspec.AnyFlatSpec

@@ -3,7 +3,8 @@ package org.plat.flowops.nova.tasks.scheduler
 import com.typesafe.scalalogging.LazyLogging
 import org.plat.flowops.nova.database.job.SchemaCreationJob
 import org.plat.flowops.nova.helper.JRTriggerOnce
-import org.plat.flowops.nova.service.{ JobRegistry, JobTriggerRegistry }
+import org.plat.flowops.nova.registry.JobRegistry
+import org.plat.flowops.nova.registry.JobTriggerRegistry
 import org.plat.flowops.nova.tasks.Task
 import org.quartz.{ Job, JobBuilder, SimpleScheduleBuilder, TriggerBuilder }
 

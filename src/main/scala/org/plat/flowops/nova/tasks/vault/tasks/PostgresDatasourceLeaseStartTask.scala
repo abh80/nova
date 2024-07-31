@@ -3,13 +3,14 @@ package org.plat.flowops.nova.tasks.vault.tasks
 import com.typesafe.scalalogging.LazyLogging
 import org.plat.flowops.nova.listeners.CustomLeaseListener
 import org.plat.flowops.nova.listeners.actionables.PostgresDatasourceLeaseListener
+import org.plat.flowops.nova.registry.LeaseContainerRegistry
 import org.plat.flowops.nova.service.LeaseContainerService.{
   addListenerToLeaseContainer,
   getLeaseContainer,
   initAndStartLeaseContainer,
   subscribeLeaseContainer
 }
-import org.plat.flowops.nova.service.{ LeaseContainerRegistry, VaultService }
+import org.plat.flowops.nova.service.VaultService
 import org.plat.flowops.nova.tasks.Task
 import org.plat.flowops.nova.tasks.injector.InjectorHandler
 
