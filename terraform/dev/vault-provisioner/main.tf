@@ -16,16 +16,20 @@ variable "postgres_host" {
   type    = string
   default = "11.0.0.3"
 }
+variable "vault_addr" {
+  type    = string
+  default = "http://127.0.0.1:8200/"
+}
 variable "postgres_username" {
   type    = string
   default = "postgres"
 }
 provider "vault" {
-  address = "http://127.0.0.1:8200"
+  address = var.vault_addr
   token   = var.vault_token
 }
 resource "vault_policy" "admins" {
-  name   = "admins"
+  name = "admins"
   policy = file("policies/admins-policy.hcl")
 }
 resource "vault_policy" "app-nova" {
@@ -37,7 +41,7 @@ resource "vault_policy" "app-nova" {
   EOH
 }
 resource "vault_policy" "database-admin" {
-  name   = "database-admin"
+  name = "database-admin"
   policy = file("policies/database-admin-policy.hcl")
 }
 
@@ -69,7 +73,7 @@ resource "vault_mount" "db" {
 resource "vault_database_secret_backend_connection" "psql_db_nova" {
   backend           = vault_mount.db.path
   name              = "main-db"
-  allowed_roles     = ["app-nova", "database-admin"]
+  allowed_roles = ["app-nova", "database-admin"]
   verify_connection = true
   plugin_name       = "postgresql-database-plugin"
   postgresql {

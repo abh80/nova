@@ -7,9 +7,7 @@ import org.springframework.vault.core.lease.domain.RequestedSecret
 
 import java.util
 
-class PostgresDatasourceLeaseListener @Inject() (database: PostgresManager)
-    extends CustomLeaseActionable
-    with LazyLogging:
+class PostgresDatasourceLeaseListener extends CustomLeaseActionable with LazyLogging:
   override def onLeaseExpired(
       secretLeaseContainer: SecretLeaseContainer,
       requestedSecret: RequestedSecret
@@ -22,4 +20,4 @@ class PostgresDatasourceLeaseListener @Inject() (database: PostgresManager)
     logger.debug(s"Renewing database connection with ${username}:${password}")
     val config = PostgresConfig.createDatabaseConfig(username, password)
 
-    database.connect(config)
+    PostgresManager().connect(config)

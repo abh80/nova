@@ -18,6 +18,7 @@ object PostgresConfig:
     hikariConfig.setDriverClassName("org.postgresql.Driver")
     hikariConfig.setMaximumPoolSize(10)
     hikariConfig.setConnectionTestQuery("SELECT 1")
+    hikariConfig.setConnectionTimeout(10000)
     new HikariDataSource(hikariConfig)
 
   private def initStaticFieldsIfRequired(): Unit =

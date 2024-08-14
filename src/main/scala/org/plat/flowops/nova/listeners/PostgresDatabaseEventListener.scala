@@ -11,3 +11,9 @@ class PostgresDatabaseEventListener extends EventListenerAdapter with LazyLoggin
       case _: DatabaseConnectedEvent =>
         logger.debug("Database Connected event!")
         JobRunner.runOnce(classOf[SchemaCreationJob].getName)
+
+      case _: DatabaseDisconnectedEvent =>
+        logger.debug("Database disconnected event!")
+
+      case e: DatabaseErrorEvent =>
+        logger.error(e.toString)

@@ -4,5 +4,4 @@ import com.google.inject.Inject
 import org.plat.flowops.nova.database.PostgresManager
 
 trait SystemService:
-  @Inject
-  protected var Database: PostgresManager = _
+  protected var Database: PostgresManager = PostgresManager()
