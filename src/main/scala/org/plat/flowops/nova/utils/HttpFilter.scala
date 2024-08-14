@@ -7,10 +7,6 @@ import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
 import javax.servlet.{ Filter, FilterChain, ServletRequest, ServletResponse }
 
 trait HttpFilter extends Filter:
-
-  @Inject
-  protected var Database: PostgresManager = _
-
   override def doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain): Unit =
     doFilter(request.asInstanceOf[HttpServletRequest], response.asInstanceOf[HttpServletResponse], chain)
 

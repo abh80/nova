@@ -16,11 +16,14 @@ class SchemaCreationJob extends Job with LazyLogging:
   var database: PostgresManager = _
 
   override def execute(jobExecutionContext: JobExecutionContext): Unit =
-    val novaUser      = TableQuery[NovaUserTable]
-    val novaUserCreds = TableQuery[NovaUserCredsTable]
-    val tables        = novaUser.schema ++ novaUserCreds.schema
+    val novaUser                   = TableQuery[NovaUserTable]
+    val novaUserCreds              = TableQuery[NovaUserCredsTable]
+    val novaRepository             = TableQuery[NovaRepositoryTable]
+    val novaRepositoryAccessPolicy = TableQuery[NovaRepositoryAccessPolicyTable]
+    val tables =
+      novaUser.schema ++ novaUserCreds.schema ++ novaRepository.schema ++ novaRepositoryAccessPolicy.schema
     logger.debug("Creating Database Schemas!")
-    val f = database.getDb.run(DBIO.seq(tables.createIfNotExists))
+    val f = database.getDb.run(DBIO.seq(tables.createIfNotExists).transactionally)
 
     f.onComplete {
       case Success(_) =>

@@ -49,6 +49,7 @@ dependencies {
     implementation("com.github.tminglei:slick-pg_3:0.22.2")
     implementation("com.itv:quartz4s-core_3:1.0.4")
     implementation("net.codingwell:scala-guice_3:7.0.0")
+    implementation("org.scala-lang:scala-reflect:2.13.14")
     testRuntimeOnly("org.junit.platform:junit-platform-engine:1.10.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.0")
     testRuntimeOnly("org.scalatestplus:junit-5-10_3:3.2.18.0")
