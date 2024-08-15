@@ -12,3 +12,6 @@ class NovaUserTable(tag: Tag) extends Table[NovaUser](tag, Some("nova"), "nova_u
   def username = column[String]("username")
 
   def base_path = column[String]("base_path")
+
+  def usernameUnique = index("idx_username", username, unique = true)
+  def basePathUnique = index("idx_base_path", base_path, unique = true)

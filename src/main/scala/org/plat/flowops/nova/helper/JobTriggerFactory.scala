@@ -1,6 +1,6 @@
 package org.plat.flowops.nova.helper
 
-import org.quartz.{SimpleScheduleBuilder, Trigger, TriggerBuilder}
+import org.quartz.{ SimpleScheduleBuilder, Trigger, TriggerBuilder }
 
 object JobTriggerFactory:
   def getTriggerOnce: Trigger =
