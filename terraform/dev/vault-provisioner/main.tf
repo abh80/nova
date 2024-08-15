@@ -29,7 +29,7 @@ provider "vault" {
   token   = var.vault_token
 }
 resource "vault_policy" "admins" {
-  name = "admins"
+  name   = "admins"
   policy = file("policies/admins-policy.hcl")
 }
 resource "vault_policy" "app-nova" {
@@ -41,7 +41,7 @@ resource "vault_policy" "app-nova" {
   EOH
 }
 resource "vault_policy" "database-admin" {
-  name = "database-admin"
+  name   = "database-admin"
   policy = file("policies/database-admin-policy.hcl")
 }
 
@@ -73,7 +73,7 @@ resource "vault_mount" "db" {
 resource "vault_database_secret_backend_connection" "psql_db_nova" {
   backend           = vault_mount.db.path
   name              = "main-db"
-  allowed_roles = ["app-nova", "database-admin"]
+  allowed_roles     = ["app-nova", "database-admin"]
   verify_connection = true
   plugin_name       = "postgresql-database-plugin"
   postgresql {
