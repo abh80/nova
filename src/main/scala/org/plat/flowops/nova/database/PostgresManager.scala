@@ -48,7 +48,7 @@ class PostgresManager @Inject() (eventListener: EventListenerAdapter)
           throw new RuntimeException("Failed to establish database connection.")
       }
       .recover { case ex: Exception =>
-        println(s"Error connecting to the database: ${ex.getMessage}")
+        logger.error(s"Error connecting to the database: ${ex.getMessage}")
         throw ex
       }
 

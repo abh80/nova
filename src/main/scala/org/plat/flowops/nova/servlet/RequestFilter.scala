@@ -27,5 +27,4 @@ class RequestFilter extends HttpFilter:
     else response.sendError(HttpServletResponse.SC_NOT_FOUND)
 
   private def isGitRequest(req: HttpServletRequest): Boolean =
-    print(HttpUtil.getStrippedUrl(req))
     API_BACKEND_REGEX.matcher(HttpUtil.getStrippedUrl(req)).matches()

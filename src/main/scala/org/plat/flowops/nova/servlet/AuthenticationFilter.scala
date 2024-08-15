@@ -46,9 +46,11 @@ class AuthenticationFilter extends AuthenticationService with HttpFilter:
       case _ => Future.failed(AuthenticationFailedExceptionType.INVALID_TOKEN.toException)
 
   private def decodeAuthenticationHeader(authHeader: String): (GitAllowedAuthorizationType, String) =
+    if authHeader.split(" ").length < 2 then return (null, "")
+
     val authType = authHeader.split(" ")(0)
     val authData = authHeader.split(" ")(1)
-    val allowed  = GitAllowedAuthorizationType.values.find(_.toString == authType).get
+    val allowed  = GitAllowedAuthorizationType.values.find(_.toString == authType).orNull
     (allowed, authData)
 
   private def rejectRequest(response: HttpServletResponse): Unit =
