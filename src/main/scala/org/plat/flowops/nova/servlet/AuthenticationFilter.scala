@@ -19,6 +19,7 @@ class AuthenticationFilter extends AuthenticationService with HttpFilter:
       response: HttpServletResponse,
       chain: FilterChain
   ): Unit =
+    logger.debug("Authentication Filter")
     val isUpdating = request.getRequestURI.endsWith(
       "/git-receive-pack"
     ) || request.getQueryString == "service=git-receive-pack"
