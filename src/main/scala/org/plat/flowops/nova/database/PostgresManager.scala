@@ -29,7 +29,6 @@ class PostgresManager @Inject() (eventListener: EventListenerAdapter)
         checkDatabaseConnection.onComplete {
           case Success(_) =>
             logger.info("Database connection created")
-
             eventListener.onEvent(Event(new DatabaseConnectedEvent, None))
           case Failure(e) =>
             eventListener.onEvent(Event(new DatabaseErrorEvent, e))

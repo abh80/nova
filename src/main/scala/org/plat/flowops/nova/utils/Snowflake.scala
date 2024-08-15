@@ -48,3 +48,12 @@ class Snowflake(workerId: Long, datacenterId: Long, var sequence: Long = 0L):
   }
 
   private def currentTimestamp(): Long = System.currentTimeMillis()
+
+object Snowflake:
+  @volatile private var snowflake: Snowflake = _
+  def apply(): Snowflake =
+    if snowflake == null then
+      synchronized {
+        snowflake = new Snowflake(0, 0)
+      }
+    snowflake

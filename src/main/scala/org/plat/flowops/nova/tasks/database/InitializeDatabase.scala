@@ -3,7 +3,6 @@ package org.plat.flowops.nova.tasks.database
 import com.typesafe.scalalogging.LazyLogging
 import org.plat.flowops.nova.database.{ PostgresConfig, PostgresManager }
 import org.plat.flowops.nova.tasks.Task
-import org.plat.flowops.nova.tasks.injector.InjectorHandler
 import org.plat.flowops.nova.utils.EnvironmentLoader
 
 object InitializeDatabase extends Task with LazyLogging:
