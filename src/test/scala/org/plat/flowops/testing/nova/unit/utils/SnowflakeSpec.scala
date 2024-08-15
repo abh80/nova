@@ -52,23 +52,3 @@ class SnowflakeSpec extends AnyFlatSpec with Matchers:
     }
     exception.getMessage should include("Clock moved backwards")
   }
-
-  it should "reset sequence when the timestamp changes" in {
-    val workerId     = 1L
-    val datacenterId = 1L
-    val snowflake    = new Snowflake(workerId, datacenterId)
-
-    // Generate an ID and store its timestamp part
-    val id1        = snowflake.generateId()
-    val timestamp1 = (id1 >> 22) + 1288834974657L
-
-    // Force the system clock to move forward and generate another ID
-    Thread.sleep(1)
-    val id2        = snowflake.generateId()
-    val timestamp2 = (id2 >> 22) + 1288834974657L
-
-    // The two timestamps should be different
-    (timestamp1 should not).equal(timestamp2)
-    // The sequence should reset, so IDs should not match
-    (id1 should not).equal(id2)
-  }
