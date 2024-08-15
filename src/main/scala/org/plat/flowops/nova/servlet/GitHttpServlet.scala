@@ -21,9 +21,7 @@ class GitHttpServlet extends GitServlet with LazyLogging:
     setRepositoryResolver(new GitRepositoryResolver(basePath))
 
   override def service(req: HttpServletRequest, res: HttpServletResponse): Unit =
-    logger.whenDebugEnabled {
-      logger.debug(s"Request Received: ${HttpRequestUtil.getDebugInfo(req)}")
-    }
+    ???
 //    if isGitRequest(req) then usingLockedRepository(req) { super.service(req, res) }
 //    else res.sendError(HttpServletResponse.SC_NOT_FOUND)
 

@@ -10,7 +10,7 @@ import javax.servlet.http.{ HttpServletRequest, HttpServletResponse }
 class RequestFilter extends HttpFilter:
 
   private val API_BACKEND_REGEX = Pattern.compile(
-    "(?x)^/repo/(.*?/((HEAD|info/refs|objects/(info/[^/]+|[a-f0-9]{2}/[a-f0-9]{38}|pack/pack-[a-f0-9]{40}\\.(pack|idx))|git-(upload|receive)-pack)))$"
+    "(?x)^/(git/)?repo/(.*?/((HEAD|info/refs|objects/(info/[^/]+|[a-f0-9]{2}/[a-f0-9]{38}|pack/pack-[a-f0-9]{40}\\.(pack|idx))|git-(upload|receive)-pack)))$"
   )
 
   override def doFilter(
@@ -27,4 +27,5 @@ class RequestFilter extends HttpFilter:
     else response.sendError(HttpServletResponse.SC_NOT_FOUND)
 
   private def isGitRequest(req: HttpServletRequest): Boolean =
+    print(HttpUtil.getStrippedUrl(req))
     API_BACKEND_REGEX.matcher(HttpUtil.getStrippedUrl(req)).matches()
