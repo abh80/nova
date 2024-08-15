@@ -1,15 +1,13 @@
 package org.plat.flowops.nova.helper
 
-import org.plat.flowops.nova.database.job.SchemaCreationJob
 import org.plat.flowops.nova.registry.JobRegistry
-import org.plat.flowops.nova.registry.JobTriggerRegistry
 import org.quartz.impl.StdSchedulerFactory
 
 object JobRunner:
   def runOnce(jobKey: String): Unit =
     val scheduler   = StdSchedulerFactory.getDefaultScheduler
-    val job         = JobRegistry.get(classOf[SchemaCreationJob].getName).get
-    val triggerOnce = JobTriggerRegistry.get(classOf[JRTriggerOnce].getName).get
+    val job         = JobRegistry.get(jobKey).get
+    val triggerOnce = JobTriggerFactory.getTriggerOnce
 
     scheduler.scheduleJob(job, triggerOnce)
     scheduler.start()

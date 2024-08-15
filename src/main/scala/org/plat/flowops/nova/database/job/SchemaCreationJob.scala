@@ -1,15 +1,17 @@
 package org.plat.flowops.nova.database.job
 
-import com.google.inject.Inject
 import com.typesafe.scalalogging.LazyLogging
+import org.plat.flowops.nova.constants.DefaultEnvironmentConstants
+import org.plat.flowops.nova.constants.DefaultEnvironmentConstants.MAKE_FIXTURES
 import org.plat.flowops.nova.database.MyPostgresProfile.api.*
 import org.plat.flowops.nova.database.PostgresManager
 import org.plat.flowops.nova.database.schema.*
-import org.plat.flowops.nova.tasks.injector.InjectorHandler
-import org.quartz.{ Job, JobExecutionContext }
+import org.plat.flowops.nova.helper.JobRunner
+import org.plat.flowops.nova.utils.EnvironmentLoader
+import org.quartz.{Job, JobExecutionContext}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{ Failure, Success }
+import scala.util.{Failure, Success}
 
 class SchemaCreationJob extends Job with LazyLogging:
 
@@ -28,5 +30,8 @@ class SchemaCreationJob extends Job with LazyLogging:
     f.onComplete {
       case Success(_) =>
         logger.debug("Tables created successfully!")
+        if EnvironmentLoader.getEnvironmentVariable(MAKE_FIXTURES.toString, DefaultEnvironmentConstants.MAKE_FIXTURES).toBoolean then
+          JobRunner.runOnce(classOf[FixtureCreationJob].getName)
+
       case Failure(e) => logger.error(e.getMessage)
     }

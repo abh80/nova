@@ -6,3 +6,4 @@ enum DefaultEnvironmentConstants(val value: String):
   case CLEAR_TMP_DIR         extends DefaultEnvironmentConstants("true")
   case GIT_HTTP_SERVLET_PATH extends DefaultEnvironmentConstants("/git/*")
   case DISABLE_VAULT         extends DefaultEnvironmentConstants("false")
+  case MAKE_FIXTURES         extends DefaultEnvironmentConstants("true")
