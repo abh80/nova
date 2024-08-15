@@ -11,6 +11,7 @@ import org.plat.flowops.nova.utils.EnvironmentLoader
 import org.quartz.{ Job, JobExecutionContext }
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.util.{ Failure, Success }
 
 class SchemaCreationJob extends Job with LazyLogging:
@@ -25,15 +26,24 @@ class SchemaCreationJob extends Job with LazyLogging:
     logger.debug("Creating Database Schemas!")
 
     val database = PostgresManager()
-    val f        = database().run(DBIO.seq(tables.createIfNotExists).transactionally)
+    val f =
+      database().run(DBIO.seq(tables.createIfNotExists).transactionally).recoverWith { case e: Throwable =>
+        if e.getMessage.contains("relation") && e.getMessage.contains("already exists") && e.getMessage
+            .contains("idx")
+        then Future.successful(None)
+        else Future.failed(e)
+      }
 
     f.onComplete {
       case Success(_) =>
         logger.debug("Tables created successfully!")
-        if EnvironmentLoader
-            .getEnvironmentVariable(MAKE_FIXTURES.toString, DefaultEnvironmentConstants.MAKE_FIXTURES)
-            .toBoolean
-        then JobRunner.runOnce(classOf[FixtureCreationJob].getName)
+        handleFixtures()
 
-      case Failure(e) => logger.error(e.getMessage)
+      case Failure(e) => logger.error("Failed to create tables", e)
     }
+
+  private def handleFixtures(): Unit =
+    if EnvironmentLoader
+        .getEnvironmentVariable(MAKE_FIXTURES.toString, DefaultEnvironmentConstants.MAKE_FIXTURES)
+        .toBoolean
+    then JobRunner.runOnce(classOf[FixtureCreationJob].getName)
