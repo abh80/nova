@@ -7,7 +7,7 @@ import java.sql.Timestamp
 case class NovaRepository(
     owner_id: Long,
     repository_name: String,
-    repository_id: Long,
+    repository_id: Option[Long],
     created_at: Timestamp,
     updated_at: Timestamp,
     isPrivate: Boolean,
@@ -19,7 +19,7 @@ class NovaRepositoryTable(tag: Tag) extends Table[NovaRepository](tag, Some("nov
   override def * = (
     owner_id,
     repository_name,
-    repository_id,
+    repository_id.?,
     created_at,
     updated_at,
     isPrivate,
@@ -27,7 +27,7 @@ class NovaRepositoryTable(tag: Tag) extends Table[NovaRepository](tag, Some("nov
     description
   ) <> ((NovaRepository.apply _).tupled, NovaRepository.unapply)
 
-  def repository_id = column[Long]("id", O.PrimaryKey)
+  def repository_id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
   def created_at = column[Timestamp]("created_at")
 
@@ -39,8 +39,8 @@ class NovaRepositoryTable(tag: Tag) extends Table[NovaRepository](tag, Some("nov
 
   def description = column[String]("description")
 
-  def uniqueUsernameRepo = index("idx_username_repository_unique", (owner_id, repository_name), unique = true)
-
   def owner_id = column[Long]("owner_id")
 
   def repository_name = column[String]("repository_name")
+
+  def uniqueUsernameRepo = index("idx_username_repository_unique", (owner_id, repository_name), unique = true)
