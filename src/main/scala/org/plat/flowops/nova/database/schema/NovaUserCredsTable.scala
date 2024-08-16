@@ -11,7 +11,7 @@ case class NovaUserCreds(
     created_at: Timestamp,
     expires_at: Timestamp,
     scope: List[String],
-    key_id: Long
+    key_id: String
 )
 
 class NovaUserCredsTable(tag: Tag) extends Table[NovaUserCreds](tag, Some("nova"), "user_credentials"):
@@ -28,7 +28,7 @@ class NovaUserCredsTable(tag: Tag) extends Table[NovaUserCreds](tag, Some("nova"
 
   def key = column[String]("key")
 
-  def key_id = column[Long]("id", O.PrimaryKey)
+  def key_id = column[String]("id", O.PrimaryKey)
 
   def expires_at = column[Timestamp]("expires_at")
 

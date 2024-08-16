@@ -30,6 +30,7 @@ class AuthenticationFilter extends AuthenticationService with HttpFilter:
       authenticateFromHeader(request.getHeader("Authorization")).onComplete {
         case Success(user) =>
           request.setAttribute("user", user)
+          logger.debug(f"Authorized user: ${user.get.username}")
           chain.doFilter(request, response)
 
         case Failure(_) => rejectRequest(response)
@@ -50,7 +51,9 @@ class AuthenticationFilter extends AuthenticationService with HttpFilter:
 
     val authType = authHeader.split(" ")(0)
     val authData = authHeader.split(" ")(1)
-    val allowed  = GitAllowedAuthorizationType.values.find(_.toString == authType).orNull
+    val allowed =
+      GitAllowedAuthorizationType.values.find(_.toString.toLowerCase == authType.toLowerCase).orNull
+    logger.debug("Auth Type: " + allowed + " Auth Data: " + authData)
     (allowed, authData)
 
   private def rejectRequest(response: HttpServletResponse): Unit =
