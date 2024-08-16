@@ -1,15 +1,11 @@
 package org.plat.flowops.nova.tasks.web
 
+import com.typesafe.scalalogging.LazyLogging
 import org.eclipse.jetty.server.Server
+import org.eclipse.jetty.servlet.{ FilterHolder, ServletHandler, ServletHolder }
+import org.plat.flowops.nova.servlet.{ AuthenticationFilter, GitHttpServlet, RepositoryFilter, RequestFilter }
 
 import java.io.File
-import com.typesafe.scalalogging.LazyLogging
-import org.eclipse.jetty.servlet.{ FilterHolder, ServletHandler, ServletHolder }
-import org.plat.flowops.nova.utils.EnvironmentLoader
-import org.plat.flowops.nova.constants.DefaultEnvironmentConstants
-import org.plat.flowops.nova.servlet.{ AuthenticationFilter, GitHttpServlet, RequestFilter }
-
-import javax.servlet.ServletContext
 
 object ServerFactory extends LazyLogging:
   def createServer(port: Int, basePath: String, gitHttpServletPath: String): Server =
@@ -33,9 +29,13 @@ object ServerFactory extends LazyLogging:
     val authenticationFilterHolder = new FilterHolder(new AuthenticationFilter)
     servletHandler.addFilterWithMapping(authenticationFilterHolder, gitHttpServletPath, 0)
 
+    val repositoryFilterHolder = new FilterHolder(new RepositoryFilter)
+    servletHandler.addFilterWithMapping(repositoryFilterHolder, gitHttpServletPath, 0)
+
     logger.info("Git HTTP Servlet Path: {}", gitHttpServletPath)
     servletHandler.addServletWithMapping(servletHolder, gitHttpServletPath)
     server.setHandler(servletHandler)
+
     server
 
   private def createBasePathIfNotExists(basePath: String): Unit =

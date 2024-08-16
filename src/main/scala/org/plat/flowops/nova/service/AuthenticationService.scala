@@ -1,13 +1,17 @@
 package org.plat.flowops.nova.service
 
 import org.plat.flowops.nova.database.schema.{ NovaUser, NovaUserCreds, NovaUserCredsTable, NovaUserTable }
-import org.plat.flowops.nova.exception.AuthenticationFailedExceptionType
+import org.plat.flowops.nova.exception.RequestRejectionExceptionType
+import slick.dbio.Effect
 import slick.jdbc.PostgresProfile.api.*
+import slick.sql.SqlAction
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AuthenticationService extends SystemService:
+  val getUserIdByUsername: String => SqlAction[Option[Long], NoStream, Effect.Read] = (username: String) =>
+    TableQuery[NovaUserTable].filter(_.username === username).map(_.user_id).result.headOption
   private val userQuery = (user_id: Long) =>
     TableQuery[NovaUserTable].filter(_.user_id === user_id).result.headOption
 
@@ -15,7 +19,7 @@ class AuthenticationService extends SystemService:
     handleAuthentication(key)
 
   private def handleAuthentication(key: String): Future[Option[NovaUser]] =
-    if key.isEmpty then Future.failed(AuthenticationFailedExceptionType.INVALID_TOKEN.toException)
+    if key.isEmpty then Future.failed(RequestRejectionExceptionType.INVALID_TOKEN.toException)
     else getUserFromCredKey(key)
 
   private def getUserFromCredKey(key: String): Future[Option[NovaUser]] =
@@ -23,7 +27,7 @@ class AuthenticationService extends SystemService:
       creds <- TableQuery[NovaUserCredsTable].filter(_.key === key).result.headOption
       user <- creds match
         case Some(cred) => userQuery(cred.user_id)
-        case None       => DBIO.successful(None)
+        case None       => DBIO.failed(RequestRejectionExceptionType.INVALID_TOKEN.toException)
     yield user
 
     Database().run(query.transactionally)
