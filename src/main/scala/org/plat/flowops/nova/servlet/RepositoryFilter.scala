@@ -12,7 +12,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{ Failure, Success }
 
 class RepositoryFilter extends RepositoryService with HttpFilter:
-  private val REPOSITORY_MATCHER_REGEX = Pattern.compile("^/git/([^/]+)/([^/]+)(/.*)?$")
+  private val REPOSITORY_MATCHER_REGEX = Pattern.compile("^/git/([^/]+)/([^/]+?)(?:\\.git)?(/.*)?$")
 
   override def doFilter(
       request: HttpServletRequest,
@@ -20,7 +20,7 @@ class RepositoryFilter extends RepositoryService with HttpFilter:
       chain: FilterChain
   ): Unit =
     logger.debug("Repository Filter")
-    val isUpdating = request.getAttribute(InternalConstants.UPDATING_REPOSITORY_KEY)
+    val isUpdating = request.getAttribute(InternalConstants.UPDATING_REPOSITORY_KEY).toString.toBoolean
 
     if !isRepositoryRequest(request)
     then rejectRequest(response, RequestRejectionExceptionType.INVALID_REQUEST)
@@ -32,13 +32,18 @@ class RepositoryFilter extends RepositoryService with HttpFilter:
 
       repositoryFuture.onComplete {
         case Success(repo) =>
-          assert(repo.isDefined)
-          request.setAttribute(InternalConstants.REPOSITORY_KEY, repo.get)
-          logger.debug(f"Found repository with ID: ${repo.get.repository_id}")
-          chain.doFilter(request, response)
+          if repo.isEmpty then rejectRequest(response, RequestRejectionExceptionType.INVALID_REPOSITORY)
+          else
+            request.setAttribute(InternalConstants.REPOSITORY_KEY, repo.get)
+            if isUpdating then
+              request.setAttribute(
+                InternalConstants.LOCKED_REPOSITORY_KEY,
+                s"${repo.get.owner_id}/${repo.get.repository_id}"
+              )
+            logger.debug(f"Found repository with ID: ${repo.get.repository_id}")
+            chain.doFilter(request, response)
 
         case Failure(_) => rejectRequest(response, RequestRejectionExceptionType.INVALID_REPOSITORY)
-
       }
 
   private def getRepositoryInfoFromUrl(req: HttpServletRequest): (String, String) =

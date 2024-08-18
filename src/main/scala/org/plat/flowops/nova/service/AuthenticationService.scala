@@ -11,7 +11,7 @@ import scala.concurrent.Future
 
 class AuthenticationService extends SystemService:
   val getUserIdByUsername: String => SqlAction[Option[Long], NoStream, Effect.Read] = (username: String) =>
-    TableQuery[NovaUserTable].filter(_.username === username).map(_.user_id).result.headOption
+    TableQuery[NovaUserTable].filter(_.username === username.toLowerCase).map(_.user_id).result.headOption
   private val userQuery = (user_id: Long) =>
     TableQuery[NovaUserTable].filter(_.user_id === user_id).result.headOption
 
