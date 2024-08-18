@@ -1,6 +1,7 @@
 package org.plat.flowops.nova.servlet
 
 import com.typesafe.scalalogging.LazyLogging
+import org.eclipse.jetty.http.HttpStatus
 import org.eclipse.jgit.http.server.GitServlet
 import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.transport.ReceivePack
@@ -22,6 +23,12 @@ class GitHttpServlet extends GitServlet with LazyLogging:
 
   override def service(req: HttpServletRequest, res: HttpServletResponse): Unit =
     logger.debug("Git Servlet")
+    if req.getAttribute(InternalConstants.REPOSITORY_KEY) == null then
+      logger.error("Repository Key is missing! Illegal")
+      res.sendError(HttpStatus.INTERNAL_SERVER_ERROR_500)
+      req.getAsyncContext.complete()
+      return
+
     usingLockedRepository(req) {
       super.service(req, res)
       req.getAsyncContext.complete()
@@ -48,9 +55,12 @@ class GitReceivePackFactory extends ReceivePackFactory[HttpServletRequest] with 
     val pusher = req.getAttribute(InternalConstants.USER_KEY).asInstanceOf[NovaUser]
     val repo   = req.getAttribute(InternalConstants.REPOSITORY_KEY).asInstanceOf[NovaRepository]
 
+    if pusher == null then
+      receivePack.sendError("User is missing")
+      return receivePack
+
     logger.debug(s"Request URI: ${req.getRequestURI}")
     logger.debug(s"Pusher: ${pusher.username}")
     logger.debug(s"Repository: ${repo.owner_id}/${repo.repository_id.get}")
-    logger.debug(repository.getDirectory.getPath)
 
     receivePack

@@ -3,8 +3,8 @@ package org.plat.flowops.nova.utils
 import org.apache.commons.lang3.RandomStringUtils
 
 import java.security.MessageDigest
-import java.util.{ Base64, UUID }
 import java.util.concurrent.atomic.AtomicInteger
+import java.util.{ Base64, UUID }
 
 object AccessTokenGenerator:
   private val ACCESS_TOKEN_PREFIX = "flat-"
@@ -17,7 +17,7 @@ object AccessTokenGenerator:
 
     val accessTokenId = UUID.randomUUID().toString
 
-    (s"$ACCESS_TOKEN_PREFIX$hash", accessTokenId)
+    (s"$ACCESS_TOKEN_PREFIX$hash", s"FLAT-$accessTokenId")
 
   private def hashString(input: String): String =
     val digest    = MessageDigest.getInstance("SHA-256")

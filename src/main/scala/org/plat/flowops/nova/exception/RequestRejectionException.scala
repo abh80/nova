@@ -28,3 +28,7 @@ object RequestRejectionExceptionType:
   case object INVALID_TOKEN extends RequestRejectionExceptionType:
     val statusCode: Int = HttpStatus.UNAUTHORIZED_401
     val message: String = "Invalid token"
+
+  case object INSUFFICIENT_PERMISSION extends RequestRejectionExceptionType:
+    val statusCode: Int = HttpStatus.FORBIDDEN_403
+    val message: String = "Insufficient permission"
